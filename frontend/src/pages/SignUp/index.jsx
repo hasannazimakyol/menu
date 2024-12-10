@@ -131,16 +131,28 @@
 // }
 
 import { useEffect, useMemo, useState } from "react";
-import { Dialog, DialogTitle, Box, Button, Checkbox, Divider, FormControlLabel, FormLabel, FormControl, Link, TextField, Typography } 
-from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  FormControl,
+  Link,
+  TextField,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
-import PropTypes from "prop-types";
 
 import Grid2 from "@mui/material/Grid2";
 import linkedInLogo from "@/assets/LinkedIn.svg";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
+import { signUp } from "./api";
+import { SimpleDialog } from "./components/SimpleDialog";
+import { Input } from "./components/Input";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -162,81 +174,93 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export function SignUp() {
-  const [emailError, setEmailError] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
-  const [nameError, setNameError] = useState(false);
-  const [nameErrorMessage, setNameErrorMessage] = useState("");
+  const [username, setUsername] = useState();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [passwordRepeat, setPasswordRepeat] = useState();
+  const [apiProgress, setApiProgress] = useState();
+  const [successMessage, setSuccessMessage] = useState();
+  const [errors, setErrors] = useState({});
+  const [generalError, setGeneralError] = useState();
+  // const { t } = useTranslation();
 
   const [open, setOpen] = useState(false);
   const [allSelected, setAllSelected] = useState(false);
 
-  const [inputs, setInputs] = useState({});
   const navigate = useNavigate();
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
-  const handleClose = (value) => {
-    setOpen(false);
-    setAllSelected(value);
-  };
+  useEffect(() => {
+    setErrors(function (lastErrors) {
+      return {
+        ...lastErrors,
+        username: undefined,
+      };
+    });
+  }, [username]);
 
-  const validateInputs = () => {
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    const name = document.getElementById("name");
+  useEffect(() => {
+    setErrors(function (lastErrors) {
+      return {
+        ...lastErrors,
+        email: undefined,
+      };
+    });
+  }, [email]);
 
-    let isValid = true;
+  useEffect(() => {
+    setErrors(function (lastErrors) {
+      return {
+        ...lastErrors,
+        password: undefined,
+      };
+    });
+  }, [password]);
 
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage("Please enter a valid email address.");
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage("");
-    }
-
-    if (!password.value || password.value.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage("Password must be at least 6 characters long.");
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage("");
-    }
-
-    if (!name.value || name.value.length < 1) {
-      setNameError(true);
-      setNameErrorMessage("Name is required.");
-      isValid = false;
-    } else {
-      setNameError(false);
-      setNameErrorMessage("");
-    }
-
-    if(!allSelected){
-      isValid = false;
-    }
-
-    return isValid;
-  };
-
-  const handleChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setInputs(values => ({...values, [name]: value}))
-    console.log(inputs);
-  }
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!nameError && !emailError && !passwordError && allSelected) {
-      console.log(inputs);
-      navigate("/success");
+    setApiProgress(true);
+    setGeneralError();
+
+    // if (
+    //   !nameError &&
+    //   !emailError &&
+    //   !passwordError &&
+    //   !passwordRepeatError &&
+    //   allSelected
+    // ) {
+    // console.log(inputs);
+    //navigate("/");
+
+    try {
+      const response = await signUp({
+        username: username,
+        email: email,
+        password: password,
+      });
+      setSuccessMessage(response.data.message);
+    } catch (axiosError) {
+      if (
+        axiosError.response?.data &&
+        axiosError.response.data.status === 400
+      ) {
+        setErrors(axiosError.response.data.validationErrors);
+      } else {
+        setGeneralError("Unexpected error occured. Please try again.");
+      }
+    } finally {
+      setApiProgress(false);
     }
+
+    // signUp({
+    //   name: inputs.name,
+    //   email: inputs.email,
+    //   password: inputs.password,
+    // })
+    //   .then((response) => {
+    //     setSuccessMessage(response.data.message);
+    //   })
+    //   .finally(() => setApiProgress(false));
+    // }
     // const data = new FormData(event.currentTarget);
     // console.log({
     //   name: data.get("name"),
@@ -245,6 +269,13 @@ export function SignUp() {
     //   password: data.get("password"),
     // });
   };
+
+  let passwordRepeatError = useMemo(() => {
+    if (password && password !== passwordRepeat) {
+      return "Password mismatch";
+    }
+    return '';
+  }, [password, passwordRepeat]);
 
   return (
     <Grid2
@@ -281,80 +312,33 @@ export function SignUp() {
             onSubmit={handleSubmit}
             sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}
           >
-            <FormControl>
-              {/* <FormLabel htmlFor="name">Full name</FormLabel> */}
-              <TextField
-                label="Full Name"
-                autoComplete="name"
-                name="name"
-                // required
-                fullWidth
-                id="name"
-                // placeholder="Hasan Nazım Akyol"
-                error={nameError}
-                helperText={nameErrorMessage}
-                color={+nameError ? "error" : "primary"}
-                value={inputs.name || ""}
-                onChange={(event) => {
-                  setNameError(false);
-                  setNameErrorMessage("");
-                  handleChange(event);
-                }}
-              />
-            </FormControl>
-            <FormControl>
-              {/* <FormLabel htmlFor="email">Email</FormLabel> */}
-              <TextField
-                label="Email"
-                // required
-                fullWidth
-                id="email"
-                name="email"
-                autoComplete="email"
-                variant="outlined"
-                error={emailError}
-                helperText={emailErrorMessage}
-                color={+passwordError ? "error" : "primary"}
-                value={inputs.email || ""}
-                onChange={(event) => {
-                  setEmailError(false);
-                  setEmailErrorMessage("");
-                  handleChange(event);
-                }}
-              />
-            </FormControl>
-            <FormControl>
-              {/* <FormLabel htmlFor="password">Password</FormLabel> */}
-              <TextField
-                label="Password"
-                // required
-                fullWidth
-                name="password"
-                // placeholder="••••••"
-                type="password"
-                id="password"
-                autoComplete="new-password"
-                variant="outlined"
-                error={passwordError}
-                helperText={passwordErrorMessage}
-                color={passwordError ? "error" : "primary"}
-                value={inputs.password || ""}
-                onChange={(event) => {
-                  setPasswordError(false);
-                  setPasswordErrorMessage("");
-                  handleChange(event);
-                }}
-              />
-            </FormControl>
+            <Input
+              id="username"
+              label="Username"
+              error={errors.username}
+              onChange={(event) => setUsername(event.target.value)}
+            />
+            <Input
+              id="email"
+              label="Email"
+              error={errors.email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+            <Input
+              id="password"
+              label="Password"
+              error={errors.password}
+              onChange={(event) => setPassword(event.target.value)}
+              type="password"
+            />
+            <Input
+              id="passwordRepeat"
+              label="Password Repeat"
+              error={passwordRepeatError}
+              onChange={(event) => setPasswordRepeat(event.target.value)}
+              type="password"
+            />
             {/* <FormControlLabel
-              control={<Checkbox value="allowExtraEmails" color="primary" />}
-              label="I want to receive updates via email."
-            /> */}
-
-            {/* <Button variant="outlined" onClick={handleClickOpen}>
-              Open simple dialog
-            </Button> */}
-            <FormControlLabel
               required
               name="agree"
               id="agree"
@@ -363,16 +347,21 @@ export function SignUp() {
                 <Checkbox checked={allSelected} onClick={handleClickOpen} />
               }
               label="Agree our terms"
-            />
+            /> */}
             <Button
               type="submit"
               fullWidth
+              disabled={apiProgress}
               variant="contained"
-              onClick={validateInputs}
+              // onClick={validateInputs}
               sx={{ mt: 1 }}
               // color="mainColor"
             >
-              Sign up
+              {apiProgress ? (
+                <CircularProgress size={25} sx={{ mr: 2 }} />
+              ) : (
+                "Sign up"
+              )}
             </Button>
             <Typography sx={{ textAlign: "center" }}>
               Already have an account?{" "}
@@ -388,9 +377,7 @@ export function SignUp() {
               </span>
             </Typography>
           </Box>
-          <Divider>
-            <Typography sx={{ color: "text.secondary" }}>or</Typography>
-          </Divider>
+          <Divider>or</Divider>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {/* <Button
               fullWidth
@@ -400,7 +387,6 @@ export function SignUp() {
             >
               Sign up with Google
             </Button> */}
-
             <Button
               fullWidth
               variant="outlined"
@@ -411,115 +397,12 @@ export function SignUp() {
             </Button>
           </Box>
         </Card>
-        <SimpleDialog
+        {/* <SimpleDialog
           allSelected={allSelected}
           open={open}
           onClose={handleClose}
-        />
+        /> */}
       </Grid2>
     </Grid2>
   );
 }
-
-function SimpleDialog(props) {
-  const { onClose, allSelected, open } = props;
-
-  const [term, setTerm] = useState(false);
-  const [term2, setTerm2] = useState(false);
-  const [term3, setTerm3] = useState(false);
-
-  const handleClose = () => {
-    if (term && term2 && term3) {
-      onClose(true);
-    } else {
-      onClose(false);
-    }
-  };
-
-  useEffect(() => {
-    setTerm(allSelected);
-    setTerm2(allSelected);
-    setTerm3(allSelected);
-  }, [open]);
-
-  return (
-    <Dialog onClose={handleClose} open={open} fullWidth>
-      <DialogTitle textAlign="center">Agree our terms</DialogTitle>
-      <TextField
-        sx={{
-          "& .MuiInputBase-input.Mui-disabled": {
-            WebkitTextFillColor: "#000000",
-          },
-        }}
-        value={`There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injectedhumour, or non-characteristic words etc`}
-        disabled
-        multiline
-        rows={10}
-        variant="outlined"
-        fullWidth
-      ></TextField>
-      <Box sx={{ m: 2 }}>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <FormControlLabel
-            required
-            control={
-              <Checkbox
-                checked={term}
-                onChange={(event) => setTerm(event.target.checked)}
-              />
-            }
-            label="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit."
-          />
-          <FormControlLabel
-            required
-            control={
-              <Checkbox
-                checked={term2}
-                onChange={(event) => setTerm2(event.target.checked)}
-              />
-            }
-            label="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit."
-          />
-          <FormControlLabel
-            required
-            control={
-              <Checkbox
-                checked={term3}
-                onChange={(event) => setTerm3(event.target.checked)}
-              />
-            }
-            label="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit."
-          />
-        </Box>
-      </Box>
-      <Box sx={{ m: 2 }}>
-        <Box sx={{ display: "flex", flexDirection: "row" }}>
-          <Button
-            fullWidth
-            variant="outlined"
-            onClick={handleClose}
-            disabled={!term || !term2 || !term3}
-            sx={{ borderRadius: 10, height: 30, mx: 1 }}
-          >
-            OK
-          </Button>
-          <Button
-            fullWidth
-            variant="outlined"
-            color="anger"
-            onClick={() => onClose(false)}
-            sx={{ borderRadius: 10, height: 30, mx: 1 }}
-          >
-            Cancel
-          </Button>
-        </Box>
-      </Box>
-    </Dialog>
-  );
-}
-
-SimpleDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  allSelected: PropTypes.bool.isRequired,
-};
