@@ -1,145 +1,9 @@
-// import { useEffect, useMemo, useState } from "react";
-// import { signUp } from "./api";
-// import { Input } from "@/shared/components/Input";
-// import { useTranslation } from "react-i18next";
-// import { Alert } from "@/shared/components/Alert";
-// import { Spinner } from "@/shared/components/Spinner";
-// import { Button } from "@/shared/components/Button";
-
-// export function SignUp() {
-//   const [username, setUsername] = useState();
-//   const [email, setEmail] = useState();
-//   const [password, setPassword] = useState();
-//   const [passwordRepeat, setPasswordRepeat] = useState();
-//   const [apiProgress, setApiProgress] = useState();
-//   const [successMessage, setSuccessMessage] = useState();
-//   const [errors, setErrors] = useState({});
-//   const [generalError, setGeneralError] = useState();
-//   const { t } = useTranslation();
-
-//   useEffect(() => {
-//     setErrors(function (lastErrors) {
-//       return {
-//         ...lastErrors,
-//         username: undefined,
-//       };
-//     });
-//   }, [username]);
-
-//   useEffect(() => {
-//     setErrors(function (lastErrors) {
-//       return {
-//         ...lastErrors,
-//         email: undefined,
-//       };
-//     });
-//   }, [email]);
-
-//   useEffect(() => {
-//     setErrors(function (lastErrors) {
-//       return {
-//         ...lastErrors,
-//         password: undefined,
-//       };
-//     });
-//   }, [password]);
-
-//   const onSubmit = async (event) => {
-//     event.preventDefault();
-//     setSuccessMessage();
-//     setGeneralError();
-//     setApiProgress(true);
-
-//     try {
-//       const response = await signUp({
-//         username,
-//         email,
-//         password,
-//       });
-//       setSuccessMessage(response.data.message);
-//     } catch (axiosError) {
-//       if (axiosError.response?.data) {
-//         if (axiosError.response.data.status === 400) {
-//           setErrors(axiosError.response.data.validationErrors);
-//         } else {
-//           setGeneralError(axiosError.response.data.message);
-//         }
-//       } else {
-//         setGeneralError(t("genericError"));
-//       }
-//     } finally {
-//       setApiProgress(false);
-//     }
-//   };
-
-//   const passwordRepeatError = useMemo(() => {
-//     if (password && password !== passwordRepeat) {
-//       return t("passwordMismatch");
-//     }
-//     return "";
-//   }, [password, passwordRepeat]);
-
-//   return (
-//     <div className="container">
-//       <div className="col-lg-6 offset-lg-3 col-sm-8 offset-sm-2">
-//         <form className="card" onSubmit={onSubmit}>
-//           <div className="text-center card-header">
-//             <h1>{t("signUp")}</h1>
-//           </div>
-//           <div className="card-body">
-//             <Input
-//               id="username"
-//               label={t("username")}
-//               error={errors.username}
-//               onChange={(event) => setUsername(event.target.value)}
-//             />
-//             <Input
-//               id="email"
-//               label={t("email")}
-//               error={errors.email}
-//               onChange={(event) => setEmail(event.target.value)}
-//             />
-//             <Input
-//               id="password"
-//               label={t("password")}
-//               error={errors.password}
-//               onChange={(event) => setPassword(event.target.value)}
-//               type="password"
-//             />
-//             <Input
-//               id="passwordRepeat"
-//               label={t("passwordRepeat")}
-//               error={passwordRepeatError}
-//               onChange={(event) => setPasswordRepeat(event.target.value)}
-//               type="password"
-//             />
-//             {successMessage && <Alert>{successMessage}</Alert>}
-//             {generalError && <Alert styleType="danger">{generalError}</Alert>}
-//             <div className="text-center">
-//               <Button
-//                 disabled={!password || password !== passwordRepeat}
-//                 apiProgress={apiProgress}
-//               >
-//                 {t("signUp")}
-//               </Button>
-//             </div>
-//           </div>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// }
-
 import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
-  Checkbox,
   Divider,
-  FormControlLabel,
-  FormControl,
   Link,
-  TextField,
   Typography,
   CircularProgress,
 } from "@mui/material";
@@ -151,8 +15,9 @@ import Grid2 from "@mui/material/Grid2";
 import linkedInLogo from "@/assets/LinkedIn.svg";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
 import { signUp } from "./api";
-import { SimpleDialog } from "./components/SimpleDialog";
+// import { SimpleDialog } from "./components/SimpleDialog";
 import { Input } from "./components/Input";
+import { useTranslation } from "react-i18next";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -182,7 +47,7 @@ export function SignUp() {
   const [successMessage, setSuccessMessage] = useState();
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState();
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
 
   const [open, setOpen] = useState(false);
   const [allSelected, setAllSelected] = useState(false);
@@ -218,63 +83,38 @@ export function SignUp() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setApiProgress(true);
-    setGeneralError();
 
-    // if (
-    //   !nameError &&
-    //   !emailError &&
-    //   !passwordError &&
-    //   !passwordRepeatError &&
-    //   allSelected
-    // ) {
-    // console.log(inputs);
-    //navigate("/");
-
-    try {
-      const response = await signUp({
-        username: username,
-        email: email,
-        password: password,
-      });
-      setSuccessMessage(response.data.message);
-    } catch (axiosError) {
-      if (
-        axiosError.response?.data &&
-        axiosError.response.data.status === 400
-      ) {
-        setErrors(axiosError.response.data.validationErrors);
-      } else {
-        setGeneralError("Unexpected error occured. Please try again.");
+    if (passwordRepeatError == "") {
+      setApiProgress(true);
+      setGeneralError();
+      try {
+        const response = await signUp({
+          username: username,
+          email: email,
+          password: password,
+        });
+        setSuccessMessage(response.data.message);
+      } catch (axiosError) {
+        if (axiosError.response?.data) {
+          if (axiosError.response.data.status === 400) {
+            setErrors(axiosError.response.data.validationErrors);
+          } else {
+            setGeneralError(axiosError.response.data.message);
+          }
+        } else {
+          setGeneralError(t("genericError"));
+        }
+      } finally {
+        setApiProgress(false);
       }
-    } finally {
-      setApiProgress(false);
     }
-
-    // signUp({
-    //   name: inputs.name,
-    //   email: inputs.email,
-    //   password: inputs.password,
-    // })
-    //   .then((response) => {
-    //     setSuccessMessage(response.data.message);
-    //   })
-    //   .finally(() => setApiProgress(false));
-    // }
-    // const data = new FormData(event.currentTarget);
-    // console.log({
-    //   name: data.get("name"),
-    //   lastName: data.get("lastName"),
-    //   email: data.get("email"),
-    //   password: data.get("password"),
-    // });
   };
 
   let passwordRepeatError = useMemo(() => {
     if (password && password !== passwordRepeat) {
-      return "Password mismatch";
+      return t("passwordMismatch");
     }
-    return '';
+    return "";
   }, [password, passwordRepeat]);
 
   return (
@@ -305,7 +145,7 @@ export function SignUp() {
               textAlign: "center",
             }}
           >
-            Sign Up
+            {t("signUp")}
           </Typography>
           <Box
             component="form"
@@ -314,26 +154,26 @@ export function SignUp() {
           >
             <Input
               id="username"
-              label="Username"
+              label={t("username")}
               error={errors.username}
               onChange={(event) => setUsername(event.target.value)}
             />
             <Input
               id="email"
-              label="Email"
+              label={t("email")}
               error={errors.email}
               onChange={(event) => setEmail(event.target.value)}
             />
             <Input
               id="password"
-              label="Password"
+              label={t("password")}
               error={errors.password}
               onChange={(event) => setPassword(event.target.value)}
               type="password"
             />
             <Input
               id="passwordRepeat"
-              label="Password Repeat"
+              label={t("passwordRepeat")}
               error={passwordRepeatError}
               onChange={(event) => setPasswordRepeat(event.target.value)}
               type="password"
@@ -360,11 +200,11 @@ export function SignUp() {
               {apiProgress ? (
                 <CircularProgress size={25} sx={{ mr: 2 }} />
               ) : (
-                "Sign up"
+                <>{t("signUp")}</>
               )}
             </Button>
             <Typography sx={{ textAlign: "center" }}>
-              Already have an account?{" "}
+              {t("alreadyHaveAnAccount")}{" "}
               <span>
                 <Link
                   component={ReactLink}
@@ -372,21 +212,13 @@ export function SignUp() {
                   variant="body2"
                   sx={{ alignSelf: "center" }}
                 >
-                  Log in
+                  {t("login")}
                 </Link>
               </span>
             </Typography>
           </Box>
-          <Divider>or</Divider>
+          <Divider>{t("or")}</Divider>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {/* <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert('Sign up with Google')}
-              startIcon={<GoogleIcon />}
-            >
-              Sign up with Google
-            </Button> */}
             <Button
               fullWidth
               variant="outlined"

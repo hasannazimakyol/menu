@@ -246,7 +246,7 @@ export function Login() {
                 name="email"
                 // placeholder="your@email.com"
                 autoComplete="email"
-                autoFocus
+                // autoFocus
                 // required
                 fullWidth
                 variant="outlined"
@@ -265,7 +265,7 @@ export function Login() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                autoFocus
+                // autoFocus
                 // required
                 fullWidth
                 variant="outlined"

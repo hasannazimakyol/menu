@@ -67,34 +67,42 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 // import AdbIcon from '@mui/icons-material/Adb';
-import logo from "@/assets/consuldex.png";
-import { useNavigate, Link } from "react-router-dom";
+// import logo from "@/assets/react.svg";
+import { useTranslation } from "react-i18next";
+import LanguageIcon from "@mui/icons-material/Language";
+import { Link } from "react-router-dom";
 
-const pages = ["Sign In", "Sign Up", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+// const pages = ["Sign In", "Sign Up", "Blog"];
+const languages = ["en", "tr"];
 
 export function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElLanguage, setAnchorElLanguage] = React.useState(null);
+  const { i18n, t } = useTranslation();
+
+  const onSelectLanguage = (language) => {
+    i18n.changeLanguage(language);
+    localStorage.setItem("lang", language);
+    setAnchorElLanguage(null);
+  };
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
+  const handleOpenLanguageMenu = (event) => {
+    setAnchorElLanguage(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+  const handleCloseLanguageMenu = () => {
+    setAnchorElLanguage(null);
   };
 
   return (
@@ -110,7 +118,7 @@ export function NavBar() {
             <img src={logo} width={60} />
           </Link> */}
             <Typography
-              variant="h6"
+              variant="h5"
               noWrap
               component={Link}
               to="/"
@@ -124,7 +132,8 @@ export function NavBar() {
                 textDecoration: "none",
               }}
             >
-              <img src={logo} width={120} />
+              {/* <img src={logo} width={120} /> */}
+              <>MENU</>
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               <IconButton
@@ -169,7 +178,7 @@ export function NavBar() {
                       color: "black",
                     }}
                   >
-                    Sign Up
+                    {t("signUp")}
                   </Typography>
                 </MenuItem>
                 <MenuItem key="signIn" onClick={handleCloseNavMenu}>
@@ -182,7 +191,7 @@ export function NavBar() {
                       color: "black",
                     }}
                   >
-                    Log In
+                    {t("login")}
                   </Typography>
                 </MenuItem>
               </Menu>
@@ -203,7 +212,7 @@ export function NavBar() {
                 textDecoration: "none",
               }}
             >
-              <img src={logo} width={100} />
+              {/* <img src={logo} width={100} /> */}
             </Typography>
 
             <Box
@@ -224,63 +233,37 @@ export function NavBar() {
             ))} */}
               <Button
                 // fullWidth
-                variant="outlined"
+                variant="text"
+                size="large"
                 component={Link}
                 to="/Login"
                 color="mainColor"
-                sx={{ borderRadius: 10, height: 30, mx: 1 }}
-                // onClick={() => alert("Sign in with LinkedIn")}
+                sx={{ borderRadius: 2, height: 45, mx: 2, border: "none" }}
               >
-                Log In
+                {t("login")}
               </Button>
-              {/* <Typography
-                component={Link}
-                to="/Login"
-                sx={{
-                  textAlign: "center",
-                  textDecoration: "none",
-                  m: 2,
-                  display: "block",
-                  color: "white",
-                }}
-              >
-                Log In
-              </Typography> */}
               <Button
                 // fullWidth
-                variant="outlined"
+                variant="text"
+                size="large"
                 component={Link}
                 to="/signup"
                 color="mainColor"
-                sx={{ borderRadius: 10, height: 30, mx: 1 }}
-                // onClick={() => alert("Sign in with LinkedIn")}
+                sx={{ borderRadius: 2, height: 45, mx: 2, border: "none" }}
               >
-                Sign Up
+                {t("signUp")}
               </Button>
-              {/* <Typography
-                component={Link}
-                to="/signup"
-                sx={{
-                  textAlign: "center",
-                  textDecoration: "none",
-                  m: 2,
-                  display: "block",
-                  color: "white",
-                }}
-              >
-                Sign Up
-              </Typography> */}
             </Box>
-            {/* <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+            <Box sx={{ flexGrow: 0, mx: 2 }}>
+              <Tooltip title={t("language")}>
+                <IconButton onClick={handleOpenLanguageMenu} sx={{ p: 0 }}>
+                  <LanguageIcon sx={{ color: "primary" }} />
                 </IconButton>
               </Tooltip>
               <Menu
                 sx={{ mt: "45px" }}
                 id="menu-appbar"
-                anchorEl={anchorElUser}
+                anchorEl={anchorElLanguage}
                 anchorOrigin={{
                   vertical: "top",
                   horizontal: "right",
@@ -290,18 +273,21 @@ export function NavBar() {
                   vertical: "top",
                   horizontal: "right",
                 }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
+                open={Boolean(anchorElLanguage)}
+                onClose={handleCloseLanguageMenu}
               >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                {languages.map((language) => (
+                  <MenuItem
+                    key={language}
+                    onClick={() => onSelectLanguage(language)}
+                  >
                     <Typography sx={{ textAlign: "center" }}>
-                      {setting}
+                      {language.toUpperCase()}
                     </Typography>
                   </MenuItem>
                 ))}
               </Menu>
-            </Box> */}
+            </Box>
           </Toolbar>
         </Container>
       </AppBar>

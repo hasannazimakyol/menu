@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { LanguageSelector } from "./shared/components/LanguageSelector";
+// import { LanguageSelector } from "./shared/components/LanguageSelector";
 import { NavBar } from "./shared/components/NavBar";
 import { AuthenticationContext } from "./shared/state/context";
 

@@ -1,9 +1,12 @@
 package com.menu.ws.error;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(value = Include.NON_NULL) // When spring transforms ApiError to json adds only not null fields.
 public class ApiError {
 
     private int status;
@@ -14,7 +17,8 @@ public class ApiError {
 
     private long timestamp = new Date().getTime();
 
-    private Map<String, String> validationErrors = new HashMap<>();
+    // private Map<String, String> validationErrors = new HashMap<>();
+    private Map<String, String> validationErrors = null;
 
     public Map<String, String> getValidationErrors() {
         return validationErrors;

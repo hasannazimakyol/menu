@@ -17,7 +17,7 @@ export function UserList() {
     try {
       const response = await loadUsers(page);
       setUserPage(response.data);
-    } 
+    }
     // catch { } 
     finally {
       setApiProgress(false)
@@ -25,7 +25,7 @@ export function UserList() {
   }, []);
 
   useEffect(() => {
-    // getUsers();
+    getUsers();
   }, []);
 
   return (

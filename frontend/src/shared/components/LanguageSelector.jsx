@@ -6,6 +6,7 @@ export function LanguageSelector() {
   const onSelectLanguage = (language) => {
     i18n.changeLanguage(language);
     localStorage.setItem("lang", language);
+    
   };
   return (
     <>
