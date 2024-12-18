@@ -1,5 +1,7 @@
 package com.menu.ws.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -22,7 +24,18 @@ public class User {
 
     boolean active = false;
 
+    @JsonIgnore
     String activationToken;
+
+    String image;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public String getActivationToken() {
         return activationToken;
