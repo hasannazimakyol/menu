@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -29,7 +28,7 @@ import com.menu.ws.shared.GenericMessage;
 import com.menu.ws.shared.Messages;
 import com.menu.ws.user.dto.UserCreate;
 import com.menu.ws.user.dto.UserDTO;
-import com.menu.ws.user.dto.UserProjection;
+// import com.menu.ws.user.dto.UserProjection;
 import com.menu.ws.user.exception.ActivationNotificationException;
 import com.menu.ws.user.exception.InvalidTokenException;
 import com.menu.ws.user.exception.NotFoundException;
@@ -72,65 +71,5 @@ public class UserController {
     UserDTO getUserById(@PathVariable long id) {
         return new UserDTO(userService.getUser(id));
     }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    ResponseEntity<ApiError> handleMethodArgNotValidEx(MethodArgumentNotValidException exception) {
-        ApiError apiError = new ApiError();
-        apiError.setPath("api/v1/users");
-        String message = Messages.getMessageForLocale("menu.error.validation", LocaleContextHolder.getLocale());
-        apiError.setMessage(message);
-        apiError.setStatus(400);
-        Map<String, String> validationErrors = new HashMap<>();
-        for (var fieldError : exception.getBindingResult().getFieldErrors()) {
-            validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
-        validationErrors = exception.getBindingResult().getFieldErrors().stream().collect(Collectors
-                .toMap(FieldError::getField, FieldError::getDefaultMessage, (existing, replacing) -> existing));
-        apiError.setValidationErrors(validationErrors);
-        return ResponseEntity.badRequest().body(apiError);
-    }
-
-    @ExceptionHandler(NotUniqueEmailException.class)
-    ResponseEntity<ApiError> handleNotUniqueEmailException(NotUniqueEmailException exception) {
-        ApiError apiError = new ApiError();
-        apiError.setPath("api/v1/users");
-        apiError.setMessage(exception.getMessage());
-        apiError.setStatus(400);
-        apiError.setValidationErrors(exception.getValidationErrors());
-        return ResponseEntity.badRequest().body(apiError);
-    }
-
-    @ExceptionHandler(ActivationNotificationException.class)
-    ResponseEntity<ApiError> handleActivationNotificationException(ActivationNotificationException exception) {
-        ApiError apiError = new ApiError();
-        apiError.setPath("api/v1/users");
-        apiError.setMessage(exception.getMessage());
-        apiError.setStatus(502);
-        return ResponseEntity.status(502).body(apiError);
-    }
-
-    @ExceptionHandler(InvalidTokenException.class)
-    ResponseEntity<ApiError> handleInvalidTokenException(InvalidTokenException exception, HttpServletRequest request) {
-        ApiError apiError = new ApiError();
-        apiError.setPath(request.getRequestURI());
-        apiError.setMessage(exception.getMessage());
-        apiError.setStatus(400);
-        return ResponseEntity.status(400).body(apiError);
-    }
-
-    @ExceptionHandler(NotFoundException.class)
-    ResponseEntity<ApiError> handleNotFoundException(NotFoundException exception, HttpServletRequest request) {
-        ApiError apiError = new ApiError();
-        apiError.setPath(request.getRequestURI());
-        apiError.setMessage(exception.getMessage());
-        apiError.setStatus(404);
-        return ResponseEntity.status(404).body(apiError);
-    }
-
-    // @ExceptionHandler(TransactionSystemException.class)
-    // ResponseEntity<ApiError>
-    // handleTransactionSystemException(TransactionSystemException exception) {
-    // return ResponseEntity.badRequest().body(new ApiError());
-    // }
 
 }

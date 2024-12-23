@@ -133,7 +133,7 @@ export function NavBar() {
               }}
             >
               {/* <img src={logo} width={120} /> */}
-              <>MENU</>
+              <>menu</>
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               <IconButton

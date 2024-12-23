@@ -1,6 +1,5 @@
 package com.menu.ws.user;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +61,10 @@ public class UserService {
 
     public User getUser(long id) {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
 }

@@ -4,39 +4,18 @@ import {
   Button,
   Divider,
   Link,
-  Typography,
-  CircularProgress,
+  Typography
 } from "@mui/material";
-
-import MuiCard from "@mui/material/Card";
-import { styled } from "@mui/material/styles";
 
 import Grid2 from "@mui/material/Grid2";
 import linkedInLogo from "@/assets/LinkedIn.svg";
-import { useNavigate, Link as ReactLink } from "react-router-dom";
+import { Link as ReactLink } from "react-router-dom";
 import { signUp } from "./api";
 // import { SimpleDialog } from "./components/SimpleDialog";
-import { Input } from "./components/Input";
+import { Input } from "@/shared/components/Input";
 import { useTranslation } from "react-i18next";
-
-const Card = styled(MuiCard)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignSelf: "center",
-  width: "100%",
-  padding: theme.spacing(4),
-  gap: theme.spacing(2),
-  margin: "auto",
-  boxShadow:
-    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
-  [theme.breakpoints.up("sm")]: {
-    width: "450px",
-  },
-  ...theme.applyStyles("dark", {
-    boxShadow:
-      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
-  }),
-}));
+import { CustomButton } from "@/shared/components/CustomButton";
+import CustomCard from "@/shared/components/CustomCard";
 
 export function SignUp() {
   const [username, setUsername] = useState();
@@ -49,10 +28,8 @@ export function SignUp() {
   const [generalError, setGeneralError] = useState();
   const { t } = useTranslation();
 
-  const [open, setOpen] = useState(false);
-  const [allSelected, setAllSelected] = useState(false);
-
-  const navigate = useNavigate();
+  // const [open, setOpen] = useState(false);
+  // const [allSelected, setAllSelected] = useState(false);
 
   useEffect(() => {
     setErrors(function (lastErrors) {
@@ -128,7 +105,7 @@ export function SignUp() {
       sx={{ mt: 2 }}
     >
       <Grid2 xs={3}>
-        <Card
+        <CustomCard
           variant="outlined"
           sx={{
             backgroundColor: "transparent",
@@ -188,21 +165,9 @@ export function SignUp() {
               }
               label="Agree our terms"
             /> */}
-            <Button
-              type="submit"
-              fullWidth
-              disabled={apiProgress}
-              variant="contained"
-              // onClick={validateInputs}
-              sx={{ mt: 1 }}
-              // color="mainColor"
-            >
-              {apiProgress ? (
-                <CircularProgress size={25} sx={{ mr: 2 }} />
-              ) : (
-                <>{t("signUp")}</>
-              )}
-            </Button>
+            <CustomButton type="submit" apiProgress={apiProgress}>
+              {t("signUp")}
+            </CustomButton>
             <Typography sx={{ textAlign: "center" }}>
               {t("alreadyHaveAnAccount")}{" "}
               <span>
@@ -225,10 +190,10 @@ export function SignUp() {
               onClick={() => alert("Sign in with LinkedIn")}
               startIcon={<img src={linkedInLogo} width={20} />}
             >
-              Log In with LinkedIn
+              {t("loginWithLinkedin")}
             </Button>
           </Box>
-        </Card>
+        </CustomCard>
         {/* <SimpleDialog
           allSelected={allSelected}
           open={open}

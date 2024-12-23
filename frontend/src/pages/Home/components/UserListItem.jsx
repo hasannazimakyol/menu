@@ -1,13 +1,47 @@
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import {
+  Avatar,
+  ListItem,
+  ListItemAvatar,
+  Typography,
+} from "@mui/material";
+import ProfileImage from "@/shared/components/ProfileImage";
 
-export function UserListItem({ user }) {
+function UserListItem({ user }) {
   return (
-    <Link
-      className="list-group-item list-group-item-action"
-      to={`/user/${user.id}`}
-      style={{ textDecoration: "none" }}
-    >
-      <span className="ms-2">{user.username}</span>
-    </Link>
+    <>
+      <ListItem
+        sx={{
+          my: 2,
+        }}
+      >
+        <Link
+          className="list-group-item list-group-item-action"
+          to={`/user/${user.id}`}
+          style={{ textDecoration: "none" }}
+        >
+          <ListItemAvatar
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Avatar>
+              <ProfileImage width={30} image={user.image} />
+            </Avatar>
+
+            <Typography mx={2}>{user.username}</Typography>
+          </ListItemAvatar>
+        </Link>
+      </ListItem>
+    </>
   );
 }
+
+UserListItem.propTypes = {
+  user: PropTypes.object,
+};
+
+export default UserListItem;

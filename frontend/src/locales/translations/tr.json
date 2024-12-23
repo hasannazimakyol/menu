@@ -7,8 +7,12 @@
   "passwordMismatch": "Sifreniz eslesmiyor",
   "genericError": "Beklenmedik bir hata olustu. Lutfen tekrar deneyin",
   "userNotFoundError": "Kullanici bulunamadi",
-  "login": "Giris yap",
+  "login": "Giriş",
   "alreadyHaveAnAccount": "Zaten hesabınız var mı?",
   "or": "ya da",
-  "language": "Dil"
+  "language": "Dil",
+  "dontHaveAnAccount": "Hesabınız yok mu?",
+  "loginWithLinkedin": "LinkedIn ile giriş yap",
+  "forgotYourPassword": "Şifrenizi mi unuttunuz?",
+  "rememberMe": "Beni hatırla"
 }

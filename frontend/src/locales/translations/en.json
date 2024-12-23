@@ -10,5 +10,9 @@
   "login": "Login",
   "alreadyHaveAnAccount": "Already have an account?",
   "or": "or",
-  "language": "Language"
+  "language": "Language",
+  "dontHaveAnAccount": "Don't have an account?",
+  "loginWithLinkedin": "Log In with LinkedIn",
+  "forgotYourPassword": "Forgot your password?",
+  "rememberMe": "Remember me"
 }
