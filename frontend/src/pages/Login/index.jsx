@@ -15,7 +15,9 @@ import { CustomButton } from "@/shared/components/CustomButton";
 import { Input } from "@/shared/components/Input";
 import CustomCard from "@/shared/components/CustomCard";
 import { login } from "./api";
-import { useAuthDispatch } from "@/shared/state/context";
+// import { useAuthDispatch } from "@/shared/state/context";
+import { loginSuccess } from "@/shared/state/redux";
+import { useDispatch } from "react-redux";
 
 // import ForgotPassword from './ForgotPassword';
 // import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
@@ -29,7 +31,8 @@ export function Login() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const dispatch = useAuthDispatch();
+  // const dispatch = useAuthDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setErrors(function (lastErrors) {
@@ -59,7 +62,8 @@ export function Login() {
         email,
         password,
       });
-      dispatch({ type: "login-success", data: response.data.user });
+      // dispatch({ type: "login-success", data: response.data.user });
+      dispatch(loginSuccess(response.data.user));
       navigate("/");
       // setSuccessMessage(response.data.message);
     } catch (axiosError) {

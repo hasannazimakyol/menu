@@ -16,6 +16,8 @@ import LanguageIcon from "@mui/icons-material/Language";
 import { Link } from "react-router-dom";
 import { Fragment, useState } from "react";
 import { useAuthDispatch, useAuthState } from "@/shared/state/context";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutSuccess } from "@/shared/state/redux";
 
 // const pages = ["Sign In", "Sign Up", "Blog"];
 const languages = ["en", "tr"];
@@ -24,8 +26,10 @@ export function NavBar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElLanguage, setAnchorElLanguage] = useState(null);
   const { i18n, t } = useTranslation();
-  const authState = useAuthState();
-  const dispatch = useAuthDispatch();
+  // const authState = useAuthState();
+  // const dispatch = useAuthDispatch();
+  const authState = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
 
   const onSelectLanguage = (language) => {
     i18n.changeLanguage(language);
@@ -51,6 +55,9 @@ export function NavBar() {
   // const onClickLogout = () => {
   //   dispatch({ type: "logout-success" });
   // };
+  const onClickLogout = () => {
+    dispatch(logoutSuccess);
+  };
 
   return (
     <Fragment>
@@ -80,7 +87,7 @@ export function NavBar() {
               }}
             >
               {/* <img src={logo} width={120} /> */}
-              <>{authState.id > 0 && (<>menu</>)}</>
+              <>{authState.id > 0 && <>menu</>}</>
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               <IconButton
