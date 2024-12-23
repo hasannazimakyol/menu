@@ -14,6 +14,8 @@ import { useTranslation } from "react-i18next";
 import { CustomButton } from "@/shared/components/CustomButton";
 import { Input } from "@/shared/components/Input";
 import CustomCard from "@/shared/components/CustomCard";
+import { login } from "./api";
+import { useAuthDispatch } from "@/shared/state/context";
 
 // import ForgotPassword from './ForgotPassword';
 // import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
@@ -26,6 +28,8 @@ export function Login() {
   const [generalError, setGeneralError] = useState();
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const dispatch = useAuthDispatch();
 
   useEffect(() => {
     setErrors(function (lastErrors) {
@@ -45,10 +49,31 @@ export function Login() {
     });
   }, [password]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!errors.email && !errors.password) {
-      navigate("/success");
+    // setSuccessMessage();
+    setGeneralError();
+    setApiProgress(true);
+    try {
+      const response = await login({
+        email,
+        password,
+      });
+      dispatch({ type: "login-success", data: response.data.user });
+      navigate("/");
+      // setSuccessMessage(response.data.message);
+    } catch (axiosError) {
+      if (axiosError.response?.data) {
+        if (axiosError.response.data.status === 400) {
+          setErrors(axiosError.response.data.validationErrors);
+        } else {
+          setGeneralError(axiosError.response.data.message);
+        }
+      } else {
+        setGeneralError(t("genericError"));
+      }
+    } finally {
+      setApiProgress(false);
     }
   };
 
@@ -61,7 +86,7 @@ export function Login() {
       direction="column"
       alignItems="center"
       justify="center"
-      style={{ minHeight: "100vh" }}
+      // style={{ minHeight: "100vh" }}
       sx={{ mt: 2 }}
     >
       <Grid2 xs={3}>

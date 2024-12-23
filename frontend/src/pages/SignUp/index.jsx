@@ -101,7 +101,7 @@ export function SignUp() {
       direction="column"
       alignItems="center"
       justify="center"
-      style={{ minHeight: "100vh" }}
+      // style={{ minHeight: "100vh" }}
       sx={{ mt: 2 }}
     >
       <Grid2 xs={3}>

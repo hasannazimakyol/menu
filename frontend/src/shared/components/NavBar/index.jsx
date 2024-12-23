@@ -1,64 +1,3 @@
-// import logo from "@/assets/react.svg";
-// import { useTranslation } from "react-i18next";
-// import { Link } from "react-router-dom";
-// import { useAuthDispatch, useAuthState } from "../../state/context";
-// import { logout } from "./api";
-
-// export function NavBar() {
-//   const { t } = useTranslation();
-//   const authState = useAuthState();
-//   const dispatch = useAuthDispatch();
-
-//   const onClickLogout = async () => {
-//     try {
-//       await logout();
-//     } catch {
-
-//     } finally {
-//       dispatch({type: 'logout-success'});
-//     }
-//   }
-//   return (
-//     <nav className="navbar navbar-expand bg-body-tertiary shadow-sm">
-//       <div className="container-fluid">
-//         <Link className="navbar-brand" to="/">
-//           <img src={logo} width={60} />
-//           Hoaxify
-//         </Link>
-//         <ul className="navbar-nav">
-//           {authState.id === 0 && (
-//             <>
-//               <li className="nav-item">
-//                 <Link className="nav-link" to="/Login">
-//                   {t("login")}
-//                 </Link>
-//               </li>
-//               <li className="nav-item">
-//                 <Link className="nav-link" to="/signup">
-//                   {t("signUp")}
-//                 </Link>
-//               </li>
-//             </>
-//           )}
-//           {authState.id > 0 && (
-//             <>
-//               <li className="nav-item">
-//                 <Link className="nav-link" to={`/user/${authState.id}`}>
-//                   <span className="ms-1">{authState.username}</span>
-//                 </Link>
-//               </li>
-//               <li className="nav-item">
-//                 <span className="nav-link" role="button" onClick={onClickLogout}>Logout</span>
-//               </li>
-//             </>
-//           )}
-//         </ul>
-//       </div>
-//     </nav>
-//   );
-// }
-
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -75,14 +14,18 @@ import MenuItem from "@mui/material/MenuItem";
 import { useTranslation } from "react-i18next";
 import LanguageIcon from "@mui/icons-material/Language";
 import { Link } from "react-router-dom";
+import { Fragment, useState } from "react";
+import { useAuthDispatch, useAuthState } from "@/shared/state/context";
 
 // const pages = ["Sign In", "Sign Up", "Blog"];
 const languages = ["en", "tr"];
 
 export function NavBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElLanguage, setAnchorElLanguage] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElLanguage, setAnchorElLanguage] = useState(null);
   const { i18n, t } = useTranslation();
+  const authState = useAuthState();
+  const dispatch = useAuthDispatch();
 
   const onSelectLanguage = (language) => {
     i18n.changeLanguage(language);
@@ -105,8 +48,12 @@ export function NavBar() {
     setAnchorElLanguage(null);
   };
 
+  // const onClickLogout = () => {
+  //   dispatch({ type: "logout-success" });
+  // };
+
   return (
-    <React.Fragment>
+    <Fragment>
       <AppBar
         position="fixed"
         color="white"
@@ -133,7 +80,7 @@ export function NavBar() {
               }}
             >
               {/* <img src={logo} width={120} /> */}
-              <>menu</>
+              <>{authState.id > 0 && (<>menu</>)}</>
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               <IconButton
@@ -254,7 +201,7 @@ export function NavBar() {
                 {t("signUp")}
               </Button>
             </Box>
-            <Box sx={{ flexGrow: 0, mx: 2 }}>
+            <Box sx={{ flexGrow: 0, mx: 3 }}>
               <Tooltip title={t("language")}>
                 <IconButton onClick={handleOpenLanguageMenu} sx={{ p: 0 }}>
                   <LanguageIcon sx={{ color: "primary" }} />
@@ -292,6 +239,6 @@ export function NavBar() {
         </Container>
       </AppBar>
       <Toolbar />
-    </React.Fragment>
+    </Fragment>
   );
 }
