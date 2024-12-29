@@ -14,5 +14,14 @@
   "dontHaveAnAccount": "Don't have an account?",
   "loginWithLinkedin": "Log In with LinkedIn",
   "forgotYourPassword": "Forgot your password?",
-  "rememberMe": "Remember me"
+  "rememberMe": "Remember me",
+  "logout": "Logout",
+  "myProfile": "My Profile",
+  "logoutDialogText": "Are you sure you want to log out?",
+  "yes": "Yes",
+  "no": "No",
+  "viewProfile": "View Profile",
+  "edit": "Edit",
+  "logoutDialogTitle": "Do you want to log out?",
+  "save": "Save"
 }

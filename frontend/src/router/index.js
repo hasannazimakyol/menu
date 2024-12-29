@@ -7,6 +7,7 @@ import App from "@/App";
 import { User } from "@/pages/User";
 import { Login } from "@/pages/Login";
 import { Activation } from "@/pages/Activation";
+import { Profile } from "@/pages/Profile";
 // import { PasswordResetRequest } from "@/pages/PasswordReset/Request";
 // import { SetPassword } from "@/pages/PasswordReset/SetPassword";
 
@@ -35,6 +36,11 @@ export default createBrowserRouter([
       {
         path: "/login",
         Component: Login,
+      },
+      {
+        // path: "/account/:id",
+        path: "/account",
+        Component: Profile,
       },
       // {
       //   path: "/password-reset/request",

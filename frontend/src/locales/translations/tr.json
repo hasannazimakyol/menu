@@ -14,5 +14,14 @@
   "dontHaveAnAccount": "Hesabınız yok mu?",
   "loginWithLinkedin": "LinkedIn ile giriş yap",
   "forgotYourPassword": "Şifrenizi mi unuttunuz?",
-  "rememberMe": "Beni hatırla"
+  "rememberMe": "Beni hatırla",
+  "logout": "Çıkış",
+  "myProfile": "Profilim",
+  "logoutDialogText": "Çıkış yapmak istediğinize emin misiniz?",
+  "yes": "Evet",
+  "no": "Hayır",
+  "viewProfile": "Profili Görüntüle",
+  "edit": "Güncelle",
+  "logoutDialogTitle": "Çıkmak mı istiyorsunuz?",
+  "save": "Kaydet"
 }

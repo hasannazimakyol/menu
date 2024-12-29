@@ -18,7 +18,7 @@ export function User() {
           <Spinner />
         </Alert>
       )}
-      <h1>{user?.username}</h1>
+      {/* <h1>{user?.username}</h1> */}
       {user && <ProfileCard user={user} />}
       {error && <Alert styleType="danger">{error}</Alert>}
     </>

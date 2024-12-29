@@ -32,6 +32,9 @@ const theme = createTheme({
     carolineBlue: createColor("#7BAFD4"),
     // mainColor: createColor("#4b8dbd"),
     mainColor: createColor("#3b8082"),
+    background: {
+      default: "#F4F4F4",
+    },
   }
 });
 

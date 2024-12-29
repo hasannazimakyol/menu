@@ -1,11 +1,6 @@
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import {
-  Avatar,
-  ListItem,
-  ListItemAvatar,
-  Typography,
-} from "@mui/material";
+import { Avatar, ListItem, ListItemAvatar, Typography } from "@mui/material";
 import ProfileImage from "@/shared/components/ProfileImage";
 
 function UserListItem({ user }) {
@@ -28,9 +23,7 @@ function UserListItem({ user }) {
               alignItems: "center",
             }}
           >
-            <Avatar>
-              <ProfileImage width={30} image={user.image} />
-            </Avatar>
+            <ProfileImage width={30} image={user.image} />
 
             <Typography mx={2}>{user.username}</Typography>
           </ListItemAvatar>

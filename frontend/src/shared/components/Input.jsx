@@ -10,10 +10,10 @@ import { FormControl, TextField } from "@mui/material";
 // }
 
 export function Input(props) {
-  const { id, label, error, onChange, type } = props;
+  const { id, label, error, onChange, type, defaultValue } = props;
 
   return (
-    <FormControl>
+    // <FormControl>
       <TextField
         label={label}
         // required
@@ -27,7 +27,8 @@ export function Input(props) {
         color={+error ? "error" : "primary"}
         onChange={onChange}
         type={type}
+        defaultValue={defaultValue}
       />
-    </FormControl>
+    // </FormControl>
   );
 }

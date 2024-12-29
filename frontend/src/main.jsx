@@ -6,9 +6,14 @@ import router from "./router";
 
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
+import { CssBaseline } from "@mui/material";
+import { StrictMode } from "react";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <ThemeProvider theme={theme}>
-    <RouterProvider router={router} />
-  </ThemeProvider>
+  <StrictMode>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  </StrictMode>
 );

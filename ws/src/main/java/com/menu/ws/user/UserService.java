@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.menu.ws.email.EmailService;
+import com.menu.ws.user.dto.UserUpdate;
 import com.menu.ws.user.exception.ActivationNotificationException;
 import com.menu.ws.user.exception.InvalidTokenException;
 import com.menu.ws.user.exception.NotFoundException;
@@ -55,8 +56,11 @@ public class UserService {
         userRepository.save(inDB);
     }
 
-    public Page<User> getUsers(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public Page<User> getUsers(Pageable pageable, User loggedInUser) {
+        if (loggedInUser == null) {
+            return userRepository.findAll(pageable);
+        }
+        return userRepository.findByIdNot(loggedInUser.getId(), pageable);
     }
 
     public User getUser(long id) {
@@ -65,6 +69,12 @@ public class UserService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public User updateUser(long id, UserUpdate userUpdate) {
+        User inDB = getUser(id);
+        inDB.setUsername(userUpdate.username());
+        return userRepository.save(inDB);
     }
 
 }

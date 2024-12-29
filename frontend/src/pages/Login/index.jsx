@@ -63,7 +63,7 @@ export function Login() {
         password,
       });
       // dispatch({ type: "login-success", data: response.data.user });
-      dispatch(loginSuccess(response.data.user));
+      dispatch(loginSuccess(response.data));
       navigate("/");
       // setSuccessMessage(response.data.message);
     } catch (axiosError) {

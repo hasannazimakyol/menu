@@ -7,6 +7,7 @@ export function CustomButton({
   onClick,
   // styleType = "primary",
   type,
+  fullWidth
 }) {
   return (
     <Button
@@ -15,7 +16,7 @@ export function CustomButton({
       disabled={apiProgress}
       variant="contained"
       onClick={onClick}
-      sx={{ mt: 1 }}
+      sx={{ mt: 2 }}
       // color="mainColor"
     >
       {/* {apiProgress && <CircularProgress size={25} sx={{ mr: 2 }} />}

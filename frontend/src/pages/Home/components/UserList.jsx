@@ -3,6 +3,7 @@ import { loadUsers } from "./api";
 import { Spinner } from "@/shared/components/Spinner";
 import UserListItem from "./UserListItem";
 import { Grid2, List, Typography } from "@mui/material";
+import { useSelector } from "react-redux";
 
 export function UserList() {
   // const [userPage, setUserPage] = useState({
@@ -15,6 +16,7 @@ export function UserList() {
   const [apiProgress, setApiProgress] = useState(false);
   const [page, setPage] = useState(-1);
   const [hasMore, setHasMore] = useState(true);
+  const authState = useSelector((store) => store.auth);
 
   const loader = useRef(null);
 
@@ -27,9 +29,14 @@ export function UserList() {
         // setUserPage(response.data);
         setHasMore(!response.data.last);
         setPage(response.data.number);
-        setUserPage((prevItems) => [...prevItems, ...response.data.content]);
+        if (page != null) {
+          setUserPage((prevItems) => [...prevItems, ...response.data.content]);
+        } else {
+          setUserPage(() => [...response.data.content]);
+        }
+      } catch {
+        setHasMore(false);
       } finally {
-        // catch { }
         setApiProgress(false);
       }
     },
@@ -37,11 +44,12 @@ export function UserList() {
   );
 
   useEffect(() => {
+    getUsers();
     return () => {
       console.log("component is unmount empty");
     };
-    // getUsers();
-  }, []);
+    // if (authState) getUsers(page);
+  }, [authState]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
