@@ -2,7 +2,6 @@ package com.menu.ws.auth.token;
 
 import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,8 @@ public class BasicAuthTokenService implements TokenService {
     @Autowired
     UserService userService;
 
-    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public Token createToken(User user, Credentials creds) {
