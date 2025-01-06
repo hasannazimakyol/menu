@@ -1,13 +1,14 @@
+import { CustomButton } from "@/shared/components/CustomButton";
 import { Input } from "@/shared/components/Input";
+import { userUpdateSuccess } from "@/shared/state/redux";
 import { Info } from "@mui/icons-material";
 import {
   Alert,
   Box,
-  Button,
   Container,
+  Grid2,
   IconButton,
   Paper,
-  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -15,10 +16,6 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "./api";
-import { CustomButton } from "@/shared/components/CustomButton";
-import { useRouteParamApiRequest } from "@/shared/hooks/useRouteParamApiRequest";
-import { getUser } from "../User/api";
-import { userUpdateSuccess } from "@/shared/state/redux";
 
 export function Profile() {
   const [apiProgress, setApiProgress] = useState();
@@ -73,27 +70,34 @@ export function Profile() {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
-        <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: "medium" }}>
-            {t("myProfile")}
-          </Typography>
-          <Tooltip title="Your personal information">
-            <IconButton size="small" sx={{ ml: 1 }}>
-              <Info size={20} />
-            </IconButton>
-          </Tooltip>
-        </Box>
-        <Box component="form" onSubmit={onSubmit}>
-          <Input
-            id="username"
-            label={t("username")}
-            error={errors.username}
-            defaultValue={authState.username}
-            onChange={onChangeUsername}
-          />
+      {/* <Paper elevation={3} sx={{ p: 4 }}> */}
+      <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+        <Typography variant="h4" component="h1" sx={{ fontWeight: "medium" }}>
+          {t("myProfile")}
+        </Typography>
+        <Tooltip title={t("yourPersonalInformation")}>
+          <IconButton size="small" sx={{ ml: 1 }}>
+            <Info size={20} />
+          </IconButton>
+        </Tooltip>
+      </Box>
+      <Grid2
+        component="form"
+        onSubmit={onSubmit}
+        container
+        alignItems="flex-start"
+        spacing={2}
+        direction="column"
+      >
+        <Input
+          id="username"
+          label={t("username")}
+          error={errors.username}
+          defaultValue={authState.username}
+          onChange={onChangeUsername}
+        />
 
-          {/* <TextField
+        {/* <TextField
             fullWidth
             label="Mobile number"
             value={formData.mobileNumber}
@@ -113,7 +117,7 @@ export function Profile() {
             sx={{ mt: 2, mb: 1, width: "100%" }}
           /> */}
 
-          {/* <Button
+        {/* <Button
             variant="contained"
             type="submit"
             sx={{
@@ -128,20 +132,21 @@ export function Profile() {
           >
             {t("save")}
           </Button> */}
-          {generalError && (
-            <Alert sx={{ mt: 2 }} severity="error">
-              {generalError}
-            </Alert>
-          )}
-          <CustomButton
-            type="submit"
-            apiProgress={apiProgress}
-            fullWidth={false}
-          >
-            {t("save")}
-          </CustomButton>
-        </Box>
-      </Paper>
+        {generalError && (
+          <Alert sx={{ mt: 2 }} severity="error">
+            {generalError}
+          </Alert>
+        )}
+        <CustomButton
+          type="submit"
+          apiProgress={apiProgress}
+          fullWidth={false}
+          variant="outlined"
+        >
+          {t("save")}
+        </CustomButton>
+      </Grid2>
+      {/* </Paper> */}
     </Container>
   );
 }

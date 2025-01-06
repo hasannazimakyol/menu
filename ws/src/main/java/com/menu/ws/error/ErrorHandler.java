@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.menu.ws.auth.exception.AuthenticationException;
 import com.menu.ws.shared.Messages;
 import com.menu.ws.user.exception.ActivationNotificationException;
-import com.menu.ws.user.exception.AuthorizationException;
 import com.menu.ws.user.exception.InvalidTokenException;
 import com.menu.ws.user.exception.NotFoundException;
 import com.menu.ws.user.exception.NotUniqueEmailException;
@@ -28,8 +27,7 @@ public class ErrorHandler {
             ActivationNotificationException.class,
             InvalidTokenException.class,
             NotFoundException.class,
-            AuthenticationException.class,
-            AuthorizationException.class
+            AuthenticationException.class
     })
     ResponseEntity<ApiError> handleException(Exception exception,
             HttpServletRequest request) {
@@ -43,7 +41,7 @@ public class ErrorHandler {
             var validationErrors = ((MethodArgumentNotValidException) exception).getBindingResult().getFieldErrors()
                     .stream().collect(Collectors
                             .toMap(FieldError::getField, FieldError::getDefaultMessage,
-                                    (existing, replacing) -> existing));
+                                    (existing, _) -> existing));
             apiError.setValidationErrors(validationErrors);
         } else if (exception instanceof NotUniqueEmailException) {
             apiError.setStatus(400);
@@ -56,8 +54,6 @@ public class ErrorHandler {
             apiError.setStatus(404);
         } else if (exception instanceof AuthenticationException) {
             apiError.setStatus(401);
-        } else if (exception instanceof AuthorizationException) {
-            apiError.setStatus(403);
         }
 
         return ResponseEntity.status(apiError.getStatus()).body(apiError);

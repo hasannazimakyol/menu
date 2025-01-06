@@ -4,6 +4,7 @@ import { Spinner } from "@/shared/components/Spinner";
 import UserListItem from "./UserListItem";
 import { Grid2, List, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 export function UserList() {
   // const [userPage, setUserPage] = useState({
@@ -14,9 +15,10 @@ export function UserList() {
   // });
   const [userPage, setUserPage] = useState([]);
   const [apiProgress, setApiProgress] = useState(false);
-  const [page, setPage] = useState(-1);
+  const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const authState = useSelector((store) => store.auth);
+  const { t } = useTranslation();
 
   const loader = useRef(null);
 
@@ -40,9 +42,8 @@ export function UserList() {
         setApiProgress(false);
       }
     },
-    [page, hasMore]
+    [page]
   );
-
   useEffect(() => {
     getUsers();
     return () => {
@@ -71,7 +72,7 @@ export function UserList() {
         observer.unobserve(target);
       }
     };
-  }, [apiProgress, hasMore]);
+  }, [apiProgress]);
 
   return (
     <Grid2
@@ -81,7 +82,7 @@ export function UserList() {
       direction="column"
     >
       <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
-        User List
+        {t("userList")}
       </Typography>
       <List>
         {userPage.map((user) => {

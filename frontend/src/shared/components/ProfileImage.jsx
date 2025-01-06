@@ -3,8 +3,12 @@ import { Avatar } from "@mui/material";
 import { t } from "i18next";
 import PropTypes from "prop-types";
 
-function ProfileImage({ width, tempImage, image }) {
+{
+  /* <div className="card-header text-center"> */
+}
+function ProfileImage({ width, tempImage, image, editMode }) {
   const profileImage = image ? `/assets/profile/${image}` : defaultProfileImage;
+  const cursor = editMode ? "pointer" : "";
 
   return (
     // <img
@@ -18,10 +22,15 @@ function ProfileImage({ width, tempImage, image }) {
     // />
     <Avatar
       alt={t("myProfile")}
-      src={tempImage || profileImage}
+      // src={image || defaultProfileImage}
+      src={profileImage}
       sx={{
         width: width,
         height: width,
+        cursor: cursor,
+      }}
+      onError={({ target }) => {
+        target.src = defaultProfileImage;
       }}
     />
   );
@@ -31,6 +40,7 @@ ProfileImage.propTypes = {
   width: PropTypes.number,
   tempImage: PropTypes.string,
   image: PropTypes.string,
+  editMode: PropTypes.bool,
 };
 
 export default ProfileImage;

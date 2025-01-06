@@ -109,7 +109,7 @@ export function NavBar() {
                 // fontFamily: "monospace",
                 // fontWeight: 700,
                 // letterSpacing: ".3rem",
-                // color: "inherit",
+                color: "black",
                 textDecoration: "none",
               }}
             >
@@ -159,7 +159,7 @@ export function NavBar() {
                     </MenuItem>
                     <MenuItem
                       component={Link}
-                      to={`/account/${authState.id}`}
+                      to="/account"
                       onClick={() => setAnchorElNav(null)}
                     >
                       <Typography
@@ -260,7 +260,7 @@ export function NavBar() {
                         sx={{ alignContent: "center" }}
                       >
                         {/* <LanguageIcon sx={{ color: "primary" }} /> */}
-                        <ProfileImage width={30} />
+                        <ProfileImage width={30} image={authState.image} />
                       </IconButton>
                     </Tooltip>
                     <Menu

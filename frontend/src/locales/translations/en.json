@@ -23,5 +23,10 @@
   "viewProfile": "View Profile",
   "edit": "Edit",
   "logoutDialogTitle": "Do you want to log out?",
-  "save": "Save"
+  "save": "Save",
+  "imageDialogTitle": "Are you sure you want to change your image",
+  "yourPersonalInformation": "Your personal information",
+  "cancel": "Cancel",
+  "userList": "User List",
+  "profileMenu": "Profile menu"
 }

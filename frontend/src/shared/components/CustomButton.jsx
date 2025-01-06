@@ -7,14 +7,15 @@ export function CustomButton({
   onClick,
   // styleType = "primary",
   type,
-  fullWidth
+  fullWidth,
+  variant = 'contained'
 }) {
   return (
     <Button
       type={type}
-      fullWidth
+      fullWidth={fullWidth}
       disabled={apiProgress}
-      variant="contained"
+      variant={variant}
       onClick={onClick}
       sx={{ mt: 2 }}
       // color="mainColor"

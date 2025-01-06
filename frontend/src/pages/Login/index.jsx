@@ -18,6 +18,7 @@ import { login } from "./api";
 // import { useAuthDispatch } from "@/shared/state/context";
 import { loginSuccess } from "@/shared/state/redux";
 import { useDispatch } from "react-redux";
+import { Alert } from "@mui/material";
 
 // import ForgotPassword from './ForgotPassword';
 // import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
@@ -163,6 +164,11 @@ export function Login() {
             <CustomButton type="submit" apiProgress={apiProgress}>
               {t("login")}
             </CustomButton>
+            {generalError && (
+              <Alert color="error">
+                {generalError}
+              </Alert>
+            )}
             <Typography sx={{ textAlign: "center" }}>
               {t("dontHaveAnAccount")}{" "}
               <span>

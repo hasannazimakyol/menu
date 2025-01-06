@@ -1,10 +1,6 @@
 package com.menu.ws.configuration;
 
-import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,26 +21,7 @@ public class AppUserDetailsService implements UserDetailsService {
         if (inDB == null) {
             throw new UsernameNotFoundException(email + " is not found");
         }
-
-        return new UserDetails() {
-
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities() {
-                return AuthorityUtils.createAuthorityList("ROLE_USER");
-            }
-
-            @Override
-            public String getPassword() {
-                return inDB.getPassword();
-            }
-
-            @Override
-            public String getUsername() {
-                return inDB.getUsername();
-            }
-
-        };
-
+        return new CurrentUser(inDB);
     }
 
 }

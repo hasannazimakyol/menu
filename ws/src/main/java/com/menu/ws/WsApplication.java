@@ -20,7 +20,7 @@ public class WsApplication {
 	@Bean
 	@Profile("dev")
 	CommandLineRunner userCreator(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-		return (args) -> {
+		return (_) -> {
 			for (var i = 1; i <= 25; i++) {
 				User user = new User();
 				user.setUsername("user" + i);

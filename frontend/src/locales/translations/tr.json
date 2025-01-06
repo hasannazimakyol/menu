@@ -23,5 +23,10 @@
   "viewProfile": "Profili Görüntüle",
   "edit": "Güncelle",
   "logoutDialogTitle": "Çıkmak mı istiyorsunuz?",
-  "save": "Kaydet"
+  "save": "Kaydet",
+  "imageDialogTitle": "Resminizi değiştirmek istediğinize emin misiniz?",
+  "yourPersonalInformation": "Profil bilgileriniz",
+  "cancel": "İptal",
+  "userList": "Kullanıcı Listesi",
+  "profileMenu": "Profil menüsü"
 }

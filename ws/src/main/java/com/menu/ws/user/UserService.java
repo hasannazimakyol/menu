@@ -10,7 +10,9 @@ import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.menu.ws.configuration.CurrentUser;
 import com.menu.ws.email.EmailService;
+import com.menu.ws.file.FileService;
 import com.menu.ws.user.dto.UserUpdate;
 import com.menu.ws.user.exception.ActivationNotificationException;
 import com.menu.ws.user.exception.InvalidTokenException;
@@ -32,6 +34,9 @@ public class UserService {
 
     @Autowired
     EmailService emailService;
+
+    @Autowired
+    FileService fileService;
 
     @Transactional(rollbackOn = MailException.class)
     public void save(User user) {
@@ -58,11 +63,11 @@ public class UserService {
         userRepository.save(inDB);
     }
 
-    public Page<User> getUsers(Pageable pageable, User loggedInUser) {
-        if (loggedInUser == null) {
+    public Page<User> getUsers(Pageable pageable, CurrentUser currentUser) {
+        if (currentUser == null) {
             return userRepository.findAll(pageable);
         }
-        return userRepository.findByIdNot(loggedInUser.getId(), pageable);
+        return userRepository.findByIdNot(currentUser.getId(), pageable);
     }
 
     public User getUser(long id) {
@@ -76,6 +81,11 @@ public class UserService {
     public User updateUser(long id, UserUpdate userUpdate) {
         User inDB = getUser(id);
         inDB.setUsername(userUpdate.username());
+        if (userUpdate.image() != null) {
+            String fileName = fileService.saveBase64StringAsFile(userUpdate.image());
+            fileService.deleteProfileImage(inDB.getImage());
+            inDB.setImage(fileName);
+        }
         return userRepository.save(inDB);
     }
 

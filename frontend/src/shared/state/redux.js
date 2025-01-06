@@ -22,6 +22,7 @@ const authSlice = createSlice({
     },
     userUpdateSuccess: (state, action) => {
       state.username = action.payload.username;
+      state.image = action.payload.image;
     },
   },
 });

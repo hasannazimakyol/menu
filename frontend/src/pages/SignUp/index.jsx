@@ -1,11 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  Button,
-  Divider,
-  Link,
-  Typography
-} from "@mui/material";
+import { Alert, Box, Button, Divider, Link, Typography } from "@mui/material";
 
 import Grid2 from "@mui/material/Grid2";
 import linkedInLogo from "@/assets/LinkedIn.svg";
@@ -168,6 +162,11 @@ export function SignUp() {
             <CustomButton type="submit" apiProgress={apiProgress}>
               {t("signUp")}
             </CustomButton>
+            {generalError && (
+              <Alert color="error">
+                {generalError}
+              </Alert>
+            )}
             <Typography sx={{ textAlign: "center" }}>
               {t("alreadyHaveAnAccount")}{" "}
               <span>
