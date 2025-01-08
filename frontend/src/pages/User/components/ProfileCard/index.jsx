@@ -59,7 +59,7 @@ export function ProfileCard({ user }) {
           username: authState.username,
           image: newImage,
         });
-        setImageDialogOpen(false);
+        handleCloseImageDialog();
         setNewImage();
         dispatch(userUpdateSuccess(response.data));
       } catch (axiosError) {
