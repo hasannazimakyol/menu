@@ -21,8 +21,10 @@ public class User {
 
     String email;
 
+    @JsonIgnore
     String password;
 
+    @JsonIgnore
     boolean active = false;
 
     @JsonIgnore
