@@ -19,7 +19,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     private MessageSource messageSource;
 
     @ExceptionHandler({ DisabledException.class, AccessDeniedException.class, BadCredentialsException.class })
-    ResponseEntity<?> handleDisabledException(Exception exception, HttpServletRequest request) {
+    ResponseEntity<?> handleException(Exception exception, HttpServletRequest request) {
 
         ApiError error = new ApiError();
         error.setMessage(exception.getMessage());

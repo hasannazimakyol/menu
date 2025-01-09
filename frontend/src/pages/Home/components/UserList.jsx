@@ -55,7 +55,7 @@ export function UserList() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !apiProgress) {
+        if (entry.isIntersecting && !apiProgress && hasMore) {
           getUsers(page + 1);
         }
       },
