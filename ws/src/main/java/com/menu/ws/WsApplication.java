@@ -21,6 +21,9 @@ public class WsApplication {
 	@Profile("dev")
 	CommandLineRunner userCreator(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		return (_) -> {
+			var userInDB = userRepository.findByEmail("user1@mail.com");
+			if (userInDB != null)
+				return;
 			for (var i = 1; i <= 25; i++) {
 				User user = new User();
 				user.setUsername("user" + i);

@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutSuccess } from "@/shared/state/redux";
 import AlertDialog from "./components/AlertDialog";
 import ProfileImage from "../ProfileImage";
+import { logout } from "./api";
 
 // const pages = ["Sign In", "Sign Up", "Blog"];
 const languages = ["en", "tr"];
@@ -73,8 +74,15 @@ export function NavBar() {
     setDialogOpen(true);
   };
 
-  const handleDialogAction = (action) => {
-    if (action) dispatch(logoutSuccess());
+  const handleDialogAction = async (action) => {
+    if (action) {
+      try {
+        await logout();
+      } catch (error) {
+      } finally {
+        dispatch(logoutSuccess());
+      }
+    }
     setDialogOpen(false);
   };
 
