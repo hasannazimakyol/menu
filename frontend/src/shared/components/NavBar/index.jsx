@@ -155,6 +155,18 @@ export function NavBar() {
                   <Box>
                     <MenuItem
                       component={Link}
+                      to="/"
+                      onClick={() => setAnchorElNav(null)}
+                    >
+                      <Typography
+                        sx={{ textAlign: "center", textDecoration: "none" }}
+                        color="black"
+                      >
+                        {t("mainPage")}
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem
+                      component={Link}
                       to={`/user/${authState.id}`}
                       onClick={() => setAnchorElNav(null)}
                     >
@@ -197,6 +209,18 @@ export function NavBar() {
                   </Box>
                 ) : (
                   <Box>
+                    <MenuItem
+                      component={Link}
+                      to="/"
+                      onClick={() => setAnchorElNav(null)}
+                    >
+                      <Typography
+                        sx={{ textAlign: "center", textDecoration: "none" }}
+                        color="black"
+                      >
+                        {t("mainPage")}
+                      </Typography>
+                    </MenuItem>
                     <MenuItem
                       key="signUp"
                       onClick={handleCloseNavMenu}

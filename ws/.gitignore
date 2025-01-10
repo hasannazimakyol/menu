@@ -4,9 +4,6 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-uploads/
-uploads-dev/
-
 ### STS ###
 .apt_generated
 .classpath
@@ -34,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+uploads/
+uploads-dev/
+dev.db.mv.db

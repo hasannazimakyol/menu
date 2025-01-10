@@ -33,25 +33,13 @@ public class TokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null) {
-            User user = tokenService.verifyToken(authorizationHeader);
+        var tokenWithPrefix = getTokenWithPrefix(request);
+        if (tokenWithPrefix != null) {
+            User user = tokenService.verifyToken(tokenWithPrefix);
             if (user != null) {
                 if (!user.isActive()) {
                     exceptionResolver.resolveException(request, response, null,
                             new DisabledException("User is disabled"));
-                    // throw new DisabledException("User is disabled"); 2nd
-                    // ApiError apiError = new ApiError(); 3nd
-                    // apiError.setStatus(401);
-                    // apiError.setMessage("User is disabled");
-                    // apiError.setPath(request.getRequestURI());
-                    // ObjectMapper objectMapper = new ObjectMapper();
-
-                    // response.setStatus(401);
-                    // response.setContentType("application/json");
-                    // OutputStream outputStream = response.getOutputStream();
-                    // objectMapper.writeValue(outputStream, apiError);
-                    // outputStream.flush();
                     return;
                 }
                 CurrentUser currentUser = new CurrentUser(user);
@@ -62,6 +50,21 @@ public class TokenFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    private String getTokenWithPrefix(HttpServletRequest request) {
+        var tokenWithPrefix = request.getHeader("Authorization");
+        var cookies = request.getCookies();
+        if (cookies == null)
+            return tokenWithPrefix;
+        for (var cookie : cookies) {
+            if (!cookie.getName().equals("app-token"))
+                continue;
+            if (cookie.getValue() == null || cookie.getValue().isEmpty())
+                continue;
+            return "Prefix " + cookie.getValue();
+        }
+        return tokenWithPrefix;
     }
 
 }
