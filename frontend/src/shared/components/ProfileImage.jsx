@@ -28,6 +28,7 @@ function ProfileImage({ width, tempImage, image, editMode }) {
         width: width,
         height: width,
         cursor: cursor,
+        backgroundColor: "gray"
       }}
       onError={({ target }) => {
         target.src = defaultProfileImage;

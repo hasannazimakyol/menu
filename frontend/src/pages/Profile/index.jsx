@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "./api";
+import { UserDeleteButton } from "./components/UserDeleteButton";
 
 export function Profile() {
   const [apiProgress, setApiProgress] = useState();
@@ -145,6 +146,8 @@ export function Profile() {
         >
           {t("save")}
         </CustomButton>
+
+        <UserDeleteButton/>
       </Grid2>
       {/* </Paper> */}
     </Container>

@@ -13,11 +13,14 @@ import org.springframework.stereotype.Service;
 import com.menu.ws.configuration.CurrentUser;
 import com.menu.ws.email.EmailService;
 import com.menu.ws.file.FileService;
+import com.menu.ws.user.dto.PasswordResetRequest;
+import com.menu.ws.user.dto.PasswordUpdate;
 import com.menu.ws.user.dto.UserUpdate;
 import com.menu.ws.user.exception.ActivationNotificationException;
 import com.menu.ws.user.exception.InvalidTokenException;
 import com.menu.ws.user.exception.NotFoundException;
 import com.menu.ws.user.exception.NotUniqueEmailException;
+import com.menu.ws.user.exception.PasswordResetRequestNotificationException;
 
 import jakarta.transaction.Transactional;
 
@@ -87,6 +90,37 @@ public class UserService {
             inDB.setImage(fileName);
         }
         return userRepository.save(inDB);
+    }
+
+    public void deleteUser(long id) {
+        User inDB = getUser(id);
+        if (inDB.getImage() != null) {
+            fileService.deleteProfileImage(inDB.getImage());
+        }
+        userRepository.delete(inDB);
+    }
+
+    public void handleResetRequest(PasswordResetRequest passwordResetRequest) {
+        User inDB = findByEmail(passwordResetRequest.email());
+        if (inDB == null)
+            throw new NotFoundException(0);
+        inDB.setPasswordResetToken(UUID.randomUUID().toString());
+        userRepository.save(inDB);
+        try {
+            emailService.sendPasswordResetToken(inDB.getEmail(), inDB.getPasswordResetToken());
+        } catch (MailException ex) {
+            throw new PasswordResetRequestNotificationException();
+        }
+    }
+
+    public void updatePassword(String token, PasswordUpdate passwordUpdate) {
+        User inDB = userRepository.findByPasswordResetToken(token);
+        if (inDB == null)
+            throw new InvalidTokenException();
+        inDB.setPasswordResetToken(null);
+        inDB.setPassword(passwordEncoder.encode(passwordUpdate.password()));
+        inDB.setActive(true);
+        userRepository.save(inDB);
     }
 
 }

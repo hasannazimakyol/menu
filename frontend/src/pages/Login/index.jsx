@@ -82,7 +82,9 @@ export function Login() {
     }
   };
 
-  const handleClickForgotPassword = () => {};
+  const handleClickForgotPassword = () => {
+    navigate("/password-reset/request");
+  };
 
   return (
     <Grid2
@@ -164,11 +166,7 @@ export function Login() {
             <CustomButton type="submit" apiProgress={apiProgress}>
               {t("login")}
             </CustomButton>
-            {generalError && (
-              <Alert color="error">
-                {generalError}
-              </Alert>
-            )}
+            {generalError && <Alert color="error">{generalError}</Alert>}
             <Typography sx={{ textAlign: "center" }}>
               {t("dontHaveAnAccount")}{" "}
               <span>

@@ -167,6 +167,11 @@ export function SignUp() {
                 {generalError}
               </Alert>
             )}
+            {successMessage && (
+              <Alert color="success">
+                {successMessage}
+              </Alert>
+            )}
             <Typography sx={{ textAlign: "center" }}>
               {t("alreadyHaveAnAccount")}{" "}
               <span>

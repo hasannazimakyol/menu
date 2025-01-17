@@ -29,5 +29,8 @@
   "cancel": "Cancel",
   "userList": "User List",
   "profileMenu": "Profile menu",
-  "mainPage": "Main Page"
+  "mainPage": "Main Page",
+  "deleteUserButton": "Delete account",
+  "resetYourPassword": "Reset your password",
+  "reset": "Reset"
 }

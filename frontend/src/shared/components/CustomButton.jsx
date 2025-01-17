@@ -8,7 +8,9 @@ export function CustomButton({
   // styleType = "primary",
   type,
   fullWidth,
-  variant = 'contained'
+  variant = "contained",
+  color = "mainColor",
+  startIcon
 }) {
   return (
     <Button
@@ -18,12 +20,13 @@ export function CustomButton({
       variant={variant}
       onClick={onClick}
       sx={{ mt: 2 }}
-      // color="mainColor"
+      color={color}
+      startIcon={startIcon}
     >
       {/* {apiProgress && <CircularProgress size={25} sx={{ mr: 2 }} />}
       {children} */}
       {apiProgress ? (
-        <CircularProgress size={25} sx={{ mr: 2 }} />
+        <CircularProgress size={25} />
       ) : (
         <>{children}</>
       )}

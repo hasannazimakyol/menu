@@ -8,6 +8,8 @@ import { User } from "@/pages/User";
 import { Login } from "@/pages/Login";
 import { Activation } from "@/pages/Activation";
 import { Profile } from "@/pages/Profile";
+import { SetPassword } from "@/pages/PasswordReset/SetPassword";
+import { PasswordResetRequest } from "@/pages/PasswordReset/Request";
 // import { PasswordResetRequest } from "@/pages/PasswordReset/Request";
 // import { SetPassword } from "@/pages/PasswordReset/SetPassword";
 
@@ -42,14 +44,14 @@ export default createBrowserRouter([
         path: "/account",
         Component: Profile,
       },
-      // {
-      //   path: "/password-reset/request",
-      //   Component: PasswordResetRequest
-      // },
-      // {
-      //   path: "/password-reset/set",
-      //   Component: SetPassword
-      // },
+      {
+        path: "/password-reset/request",
+        Component: PasswordResetRequest,
+      },
+      {
+        path: "/password-reset/set",
+        Component: SetPassword,
+      }
     ],
   },
 ]);
