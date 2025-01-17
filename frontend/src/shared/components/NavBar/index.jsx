@@ -1,64 +1,3 @@
-// import logo from "@/assets/react.svg";
-// import { useTranslation } from "react-i18next";
-// import { Link } from "react-router-dom";
-// import { useAuthDispatch, useAuthState } from "../../state/context";
-// import { logout } from "./api";
-
-// export function NavBar() {
-//   const { t } = useTranslation();
-//   const authState = useAuthState();
-//   const dispatch = useAuthDispatch();
-
-//   const onClickLogout = async () => {
-//     try {
-//       await logout();
-//     } catch {
-
-//     } finally {
-//       dispatch({type: 'logout-success'});
-//     }
-//   }
-//   return (
-//     <nav className="navbar navbar-expand bg-body-tertiary shadow-sm">
-//       <div className="container-fluid">
-//         <Link className="navbar-brand" to="/">
-//           <img src={logo} width={60} />
-//           Hoaxify
-//         </Link>
-//         <ul className="navbar-nav">
-//           {authState.id === 0 && (
-//             <>
-//               <li className="nav-item">
-//                 <Link className="nav-link" to="/Login">
-//                   {t("login")}
-//                 </Link>
-//               </li>
-//               <li className="nav-item">
-//                 <Link className="nav-link" to="/signup">
-//                   {t("signUp")}
-//                 </Link>
-//               </li>
-//             </>
-//           )}
-//           {authState.id > 0 && (
-//             <>
-//               <li className="nav-item">
-//                 <Link className="nav-link" to={`/user/${authState.id}`}>
-//                   <span className="ms-1">{authState.username}</span>
-//                 </Link>
-//               </li>
-//               <li className="nav-item">
-//                 <span className="nav-link" role="button" onClick={onClickLogout}>Logout</span>
-//               </li>
-//             </>
-//           )}
-//         </ul>
-//       </div>
-//     </nav>
-//   );
-// }
-
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -75,14 +14,27 @@ import MenuItem from "@mui/material/MenuItem";
 import { useTranslation } from "react-i18next";
 import LanguageIcon from "@mui/icons-material/Language";
 import { Link } from "react-router-dom";
+import { Fragment, useState } from "react";
+// import { useAuthDispatch, useAuthState } from "@/shared/state/context";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutSuccess } from "@/shared/state/redux";
+import AlertDialog from "./components/AlertDialog";
+import ProfileImage from "../ProfileImage";
+import { logout } from "./api";
 
 // const pages = ["Sign In", "Sign Up", "Blog"];
 const languages = ["en", "tr"];
 
 export function NavBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElLanguage, setAnchorElLanguage] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElLanguage, setAnchorElLanguage] = useState(null);
+  const [anchorElProfile, setAnchorElProfile] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { i18n, t } = useTranslation();
+  // const authState = useAuthState();
+  // const dispatch = useAuthDispatch();
+  const authState = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
 
   const onSelectLanguage = (language) => {
     i18n.changeLanguage(language);
@@ -93,8 +45,13 @@ export function NavBar() {
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenLanguageMenu = (event) => {
     setAnchorElLanguage(event.currentTarget);
+  };
+
+  const handleOpenProfileMenu = (event) => {
+    setAnchorElProfile(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
@@ -105,12 +62,44 @@ export function NavBar() {
     setAnchorElLanguage(null);
   };
 
+  const handleCloseProfileMenu = () => {
+    setAnchorElProfile(null);
+  };
+
+  // const onClickLogout = () => {
+  //   dispatch({ type: "logout-success" });
+  // };
+
+  const onClickLogout = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogAction = async (action) => {
+    if (action) {
+      try {
+        await logout();
+      } catch (error) {
+      } finally {
+        dispatch(logoutSuccess());
+      }
+    }
+    setDialogOpen(false);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
   return (
-    <React.Fragment>
+    <Fragment>
       <AppBar
         position="fixed"
-        color="white"
-        sx={{ border: "none", boxShadow: "none", my: 1 }}
+        sx={{
+          border: "none",
+          boxShadow: "none",
+          py: 1,
+          backgroundColor: "#F4F4F4",
+        }}
       >
         <Container maxWidth="xl">
           <Toolbar disableGutters>
@@ -125,15 +114,15 @@ export function NavBar() {
               sx={{
                 mr: 4,
                 display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
+                // fontFamily: "monospace",
                 // fontWeight: 700,
                 // letterSpacing: ".3rem",
-                color: "inherit",
+                color: "black",
                 textDecoration: "none",
               }}
             >
               {/* <img src={logo} width={120} /> */}
-              <>MENU</>
+              menu
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               <IconButton
@@ -162,38 +151,110 @@ export function NavBar() {
                 onClose={handleCloseNavMenu}
                 sx={{ display: { xs: "block", md: "none" } }}
               >
-                {/* {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
-                </MenuItem>
-              ))} */}
-                <MenuItem key="signUp" onClick={handleCloseNavMenu}>
-                  {/* <Typography sx={{ textAlign: "center" }}>Sign Up</Typography> */}
-                  <Typography
-                    component={Link}
-                    to="/signup"
-                    sx={{
-                      textAlign: "center",
-                      textDecoration: "none",
-                      color: "black",
-                    }}
-                  >
-                    {t("signUp")}
-                  </Typography>
-                </MenuItem>
-                <MenuItem key="signIn" onClick={handleCloseNavMenu}>
-                  <Typography
-                    component={Link}
-                    to="/Login"
-                    sx={{
-                      textAlign: "center",
-                      textDecoration: "none",
-                      color: "black",
-                    }}
-                  >
-                    {t("login")}
-                  </Typography>
-                </MenuItem>
+                {authState.id > 0 ? (
+                  <Box>
+                    <MenuItem
+                      component={Link}
+                      to="/"
+                      onClick={() => setAnchorElNav(null)}
+                    >
+                      <Typography
+                        sx={{ textAlign: "center", textDecoration: "none" }}
+                        color="black"
+                      >
+                        {t("mainPage")}
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem
+                      component={Link}
+                      to={`/user/${authState.id}`}
+                      onClick={() => setAnchorElNav(null)}
+                    >
+                      <Typography
+                        sx={{ textAlign: "center", textDecoration: "none" }}
+                        color="black"
+                      >
+                        {t("viewProfile")}
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem
+                      component={Link}
+                      to="/account"
+                      onClick={() => setAnchorElNav(null)}
+                    >
+                      <Typography
+                        color="black"
+                        sx={{ textAlign: "center", textDecoration: "none" }}
+                      >
+                        {t("edit")}
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem
+                      key="logout"
+                      onClick={() => {
+                        setAnchorElNav(null);
+                        onClickLogout();
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          textAlign: "center",
+                          textDecoration: "none",
+                          color: "black",
+                        }}
+                      >
+                        {t("logout")}
+                      </Typography>
+                    </MenuItem>
+                  </Box>
+                ) : (
+                  <Box>
+                    <MenuItem
+                      component={Link}
+                      to="/"
+                      onClick={() => setAnchorElNav(null)}
+                    >
+                      <Typography
+                        sx={{ textAlign: "center", textDecoration: "none" }}
+                        color="black"
+                      >
+                        {t("mainPage")}
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem
+                      key="signUp"
+                      onClick={handleCloseNavMenu}
+                      component={Link}
+                      to="/signup"
+                    >
+                      <Typography
+                        sx={{
+                          textAlign: "center",
+                          textDecoration: "none",
+                          color: "black",
+                        }}
+                      >
+                        {t("signUp")}
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem
+                      key="signIn"
+                      onClick={handleCloseNavMenu}
+                      component={Link}
+                      to="/Login"
+                    >
+                      <Typography
+                        sx={{
+                          textAlign: "center",
+                          textDecoration: "none",
+                          color: "black",
+                        }}
+                      >
+                        {t("login")}
+                      </Typography>
+                    </MenuItem>{" "}
+                  </Box>
+                )}
               </Menu>
             </Box>
             <Typography
@@ -222,39 +283,129 @@ export function NavBar() {
                 flexDirection: "row-reverse",
               }}
             >
-              {/* {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "black", display: "block" }}
-              >
-                {page}
-              </Button>
-            ))} */}
-              <Button
-                // fullWidth
-                variant="text"
-                size="large"
-                component={Link}
-                to="/Login"
-                color="mainColor"
-                sx={{ borderRadius: 2, height: 45, mx: 2, border: "none" }}
-              >
-                {t("login")}
-              </Button>
-              <Button
-                // fullWidth
-                variant="text"
-                size="large"
-                component={Link}
-                to="/signup"
-                color="mainColor"
-                sx={{ borderRadius: 2, height: 45, mx: 2, border: "none" }}
-              >
-                {t("signUp")}
-              </Button>
+              {authState.id > 0 ? (
+                <Box>
+                  <Box sx={{ flexGrow: 0, mx: 3 }}>
+                    <Tooltip title={t("profileMenu")}>
+                      <IconButton
+                        onClick={handleOpenProfileMenu}
+                        sx={{ alignContent: "center" }}
+                      >
+                        {/* <LanguageIcon sx={{ color: "primary" }} /> */}
+                        <ProfileImage width={30} image={authState.image} />
+                      </IconButton>
+                    </Tooltip>
+                    <Menu
+                      sx={{ mt: "45px" }}
+                      anchorEl={anchorElProfile}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      keepMounted
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      open={Boolean(anchorElProfile)}
+                      onClose={handleCloseProfileMenu}
+                    >
+                      <MenuItem
+                        component={Link}
+                        to={`/user/${authState.id}`}
+                        onClick={() => setAnchorElProfile(null)}
+                      >
+                        <Typography
+                          sx={{ textAlign: "center", textDecoration: "none" }}
+                          color="black"
+                        >
+                          {t("viewProfile")}
+                        </Typography>
+                      </MenuItem>
+                      <MenuItem
+                        component={Link}
+                        // to={`/account/${authState.id}`}
+                        to="/account"
+                        onClick={() => setAnchorElProfile(null)}
+                      >
+                        <Typography
+                          color="black"
+                          sx={{ textAlign: "center", textDecoration: "none" }}
+                        >
+                          {t("edit")}
+                        </Typography>
+                      </MenuItem>
+                      <MenuItem
+                        key="logout"
+                        onClick={() => {
+                          setAnchorElProfile(null);
+                          onClickLogout();
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            textAlign: "center",
+                            textDecoration: "none",
+                            // color: "black",
+                          }}
+                          color="black"
+                        >
+                          {t("logout")}
+                        </Typography>
+                      </MenuItem>
+                    </Menu>
+                    {/* <Button
+                      // fullWidth
+                      variant="text"
+                      size="large"
+                      color="mainColor"
+                      component={Link}
+                      to={`/user/${authState.id}`}
+                      sx={{
+                        borderRadius: 2,
+                        height: 45,
+                        mx: 2,
+                        border: "none",
+                      }}
+                    >
+                      {t("myProfile")}
+                    </Button> */}
+
+                    <AlertDialog
+                      open={dialogOpen}
+                      onClose={handleCloseDialog}
+                      onAction={handleDialogAction}
+                    />
+                  </Box>
+                </Box>
+              ) : (
+                <Box>
+                  <Button
+                    // fullWidth
+                    variant="text"
+                    size="large"
+                    component={Link}
+                    to="/Login"
+                    color="mainColor"
+                    sx={{ borderRadius: 2, height: 45, mx: 2, border: "none" }}
+                  >
+                    {t("login")}
+                  </Button>
+                  <Button
+                    // fullWidth
+                    variant="text"
+                    size="large"
+                    component={Link}
+                    to="/signup"
+                    color="mainColor"
+                    sx={{ borderRadius: 2, height: 45, mx: 2, border: "none" }}
+                  >
+                    {t("signUp")}
+                  </Button>
+                </Box>
+              )}
             </Box>
-            <Box sx={{ flexGrow: 0, mx: 2 }}>
+            <Box sx={{ flexGrow: 0, mx: 3 }}>
               <Tooltip title={t("language")}>
                 <IconButton onClick={handleOpenLanguageMenu} sx={{ p: 0 }}>
                   <LanguageIcon sx={{ color: "primary" }} />
@@ -292,6 +443,6 @@ export function NavBar() {
         </Container>
       </AppBar>
       <Toolbar />
-    </React.Fragment>
+    </Fragment>
   );
 }

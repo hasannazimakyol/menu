@@ -1,10 +1,16 @@
 package com.menu.ws.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.menu.ws.auth.token.Token;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -20,14 +26,23 @@ public class User {
 
     String email;
 
+    @JsonIgnore
     String password;
 
+    @JsonIgnore
     boolean active = false;
 
     @JsonIgnore
     String activationToken;
 
+    @JsonIgnore
+    String passwordResetToken;
+
+    @Lob
     String image;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE) // when deleting user, related tokens will be removed.
+    List<Token> tokens;
 
     public String getImage() {
         return image;
@@ -83,5 +98,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPasswordResetToken() {
+        return passwordResetToken;
+    }
+
+    public void setPasswordResetToken(String passwordResetToken) {
+        this.passwordResetToken = passwordResetToken;
     }
 }

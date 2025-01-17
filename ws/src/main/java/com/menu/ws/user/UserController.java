@@ -1,48 +1,37 @@
 package com.menu.ws.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+// import com.menu.ws.user.dto.UserProjection;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.menu.ws.error.ApiError;
+import com.menu.ws.configuration.CurrentUser;
 import com.menu.ws.shared.GenericMessage;
 import com.menu.ws.shared.Messages;
 import com.menu.ws.user.dto.UserCreate;
 import com.menu.ws.user.dto.UserDTO;
-import com.menu.ws.user.dto.UserProjection;
-import com.menu.ws.user.exception.ActivationNotificationException;
-import com.menu.ws.user.exception.InvalidTokenException;
-import com.menu.ws.user.exception.NotFoundException;
-import com.menu.ws.user.exception.NotUniqueEmailException;
+import com.menu.ws.user.dto.PasswordResetRequest;
+import com.menu.ws.user.dto.PasswordUpdate;
+import com.menu.ws.user.dto.UserUpdate;
+
+import jakarta.validation.Valid;
 
 @RestController
 public class UserController {
 
     @Autowired
     UserService userService;
-
-    @Autowired
-    MessageSource messageSource;
 
     @PostMapping("/api/v1/users")
     GenericMessage createUser(@Valid @RequestBody UserCreate userCreate) {
@@ -64,8 +53,8 @@ public class UserController {
     // Page<User> getUsers(@RequestParam(defaultValue = "0") int page,
     // @RequestParam(defaultValue = "10") int size) {
     // Page<UserProjection> getUsers(Pageable pageable) {
-    Page<UserDTO> getUsers(Pageable pageable) {
-        return userService.getUsers(pageable).map(UserDTO::new);
+    Page<UserDTO> getUsers(Pageable pageable, @AuthenticationPrincipal CurrentUser currentUser) {
+        return userService.getUsers(pageable, currentUser).map(UserDTO::new);
     }
 
     @GetMapping("/api/v1/users/{id}")
@@ -73,64 +62,34 @@ public class UserController {
         return new UserDTO(userService.getUser(id));
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    ResponseEntity<ApiError> handleMethodArgNotValidEx(MethodArgumentNotValidException exception) {
-        ApiError apiError = new ApiError();
-        apiError.setPath("api/v1/users");
-        String message = Messages.getMessageForLocale("menu.error.validation", LocaleContextHolder.getLocale());
-        apiError.setMessage(message);
-        apiError.setStatus(400);
-        Map<String, String> validationErrors = new HashMap<>();
-        for (var fieldError : exception.getBindingResult().getFieldErrors()) {
-            validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
-        validationErrors = exception.getBindingResult().getFieldErrors().stream().collect(Collectors
-                .toMap(FieldError::getField, FieldError::getDefaultMessage, (existing, replacing) -> existing));
-        apiError.setValidationErrors(validationErrors);
-        return ResponseEntity.badRequest().body(apiError);
+    @PutMapping("/api/v1/users/{id}")
+    @PreAuthorize("#id == principal.id")
+    UserDTO updateUser(@PathVariable long id, @Valid @RequestBody UserUpdate userUpdate) {
+        return new UserDTO(userService.updateUser(id, userUpdate));
     }
 
-    @ExceptionHandler(NotUniqueEmailException.class)
-    ResponseEntity<ApiError> handleNotUniqueEmailException(NotUniqueEmailException exception) {
-        ApiError apiError = new ApiError();
-        apiError.setPath("api/v1/users");
-        apiError.setMessage(exception.getMessage());
-        apiError.setStatus(400);
-        apiError.setValidationErrors(exception.getValidationErrors());
-        return ResponseEntity.badRequest().body(apiError);
+    @DeleteMapping("/api/v1/users/{id}")
+    @PreAuthorize("#id == principal.id")
+    GenericMessage deleteUser(@PathVariable long id) {
+        userService.deleteUser(id);
+        String message = Messages.getMessageForLocale("menu.delete.user.success.message",
+                LocaleContextHolder.getLocale());
+        return new GenericMessage(message);
     }
 
-    @ExceptionHandler(ActivationNotificationException.class)
-    ResponseEntity<ApiError> handleActivationNotificationException(ActivationNotificationException exception) {
-        ApiError apiError = new ApiError();
-        apiError.setPath("api/v1/users");
-        apiError.setMessage(exception.getMessage());
-        apiError.setStatus(502);
-        return ResponseEntity.status(502).body(apiError);
+    @PostMapping("api/v1/users/password-reset")
+    GenericMessage passwordResetRequest(@Valid @RequestBody PasswordResetRequest passwordResetRequest) {
+        userService.handleResetRequest(passwordResetRequest);
+        String message = Messages.getMessageForLocale("menu.password.reset.user.success.message",
+                LocaleContextHolder.getLocale());
+        return new GenericMessage(message);
     }
 
-    @ExceptionHandler(InvalidTokenException.class)
-    ResponseEntity<ApiError> handleInvalidTokenException(InvalidTokenException exception, HttpServletRequest request) {
-        ApiError apiError = new ApiError();
-        apiError.setPath(request.getRequestURI());
-        apiError.setMessage(exception.getMessage());
-        apiError.setStatus(400);
-        return ResponseEntity.status(400).body(apiError);
+    @PatchMapping("api/v1/users/{token}/password")
+    GenericMessage setPassword(@PathVariable String token, @Valid @RequestBody PasswordUpdate passwordUpdate) {
+        userService.updatePassword(token, passwordUpdate);
+        String message = Messages.getMessageForLocale("menu.activate.user.success.message",
+                LocaleContextHolder.getLocale());
+        return new GenericMessage(message);
     }
-
-    @ExceptionHandler(NotFoundException.class)
-    ResponseEntity<ApiError> handleNotFoundException(NotFoundException exception, HttpServletRequest request) {
-        ApiError apiError = new ApiError();
-        apiError.setPath(request.getRequestURI());
-        apiError.setMessage(exception.getMessage());
-        apiError.setStatus(404);
-        return ResponseEntity.status(404).body(apiError);
-    }
-
-    // @ExceptionHandler(TransactionSystemException.class)
-    // ResponseEntity<ApiError>
-    // handleTransactionSystemException(TransactionSystemException exception) {
-    // return ResponseEntity.badRequest().body(new ApiError());
-    // }
-
 }

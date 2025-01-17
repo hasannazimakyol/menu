@@ -42,7 +42,7 @@ public class EmailService {
         properties.put("mail.smtp.starttls.enable", true);
     }
 
-    String activationEmail = """
+    String emailTemplate = """
                 <html>
                     <body>
                         <h1>${title}</h1>
@@ -57,7 +57,32 @@ public class EmailService {
         var title = messageSource.getMessage("menu.mail.user.created.title", null, LocaleContextHolder.getLocale());
         var clickHere = messageSource.getMessage("menu.mail.click.here", null, LocaleContextHolder.getLocale());
 
-        var mailBody = activationEmail
+        var mailBody = emailTemplate
+                .replace("${url}", activationUrl)
+                .replace("${title}", title)
+                .replace("${clickHere}", clickHere);
+
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
+
+        try {
+            message.setFrom(menuProperties.getEmail().from());
+            message.setTo(email);
+            message.setSubject(title);
+            message.setText(mailBody, true);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        this.mailSender.send(mimeMessage);
+    }
+
+    public void sendPasswordResetToken(String email, String passwordResetToken) {
+        var activationUrl = menuProperties.getClient().host() + "/password-reset/set?tk=" + passwordResetToken;
+
+        var title = messageSource.getMessage("menu.mail.user.password.reset.title", null, LocaleContextHolder.getLocale());
+        var clickHere = messageSource.getMessage("menu.mail.click.here", null, LocaleContextHolder.getLocale());
+
+        var mailBody = emailTemplate
                 .replace("${url}", activationUrl)
                 .replace("${title}", title)
                 .replace("${clickHere}", clickHere);

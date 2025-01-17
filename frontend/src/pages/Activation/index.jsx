@@ -1,7 +1,7 @@
 import { activateUser } from "./api";
-import { Alert } from "@/shared/components/Alert";
 import { Spinner } from "@/shared/components/Spinner";
 import { useRouteParamApiRequest } from "@/shared/hooks/useRouteParamApiRequest";
+import { Alert } from "@mui/material";
 
 export function Activation() {
   const { apiProgress, data, error } = useRouteParamApiRequest(
@@ -16,7 +16,7 @@ export function Activation() {
         </Alert>
       )}
       {data?.message && <Alert>{data.message}</Alert>}
-      {error && <Alert styleType="danger">{error}</Alert>}
+      {error && <Alert color="error">{error}</Alert>}
     </>
   );
 }

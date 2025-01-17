@@ -13,7 +13,7 @@ public interface UserProjection {
     @Value("#{target.image != null ? target.image : 'default.png'}")
     String getImage();
 
-    // @Value("#{target.firstName +  ' ' + target.lastname}")
+    // @Value("#{target.firstName +  ' ' + target.lastName}")
     // String getFullname();
 
 }

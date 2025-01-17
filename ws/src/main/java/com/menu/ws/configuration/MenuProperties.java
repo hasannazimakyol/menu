@@ -11,6 +11,26 @@ public class MenuProperties {
 
     private Client client;
 
+    private Storage storage = new Storage();
+
+    private String tokenType;
+
+    public String getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
+    }
+
+    public Storage getStorage() {
+        return storage;
+    }
+
+    public void setStorage(Storage storage) {
+        this.storage = storage;
+    }
+
     public Client getClient() {
         return client;
     }
@@ -37,5 +57,26 @@ public class MenuProperties {
 
     public static record Client(
             String host) {
+    }
+
+    public static class Storage { // this is class because of enter default values
+        String root = "uploads";
+        String profile = "profile";
+
+        public String getRoot() {
+            return root;
+        }
+
+        public void setRoot(String root) {
+            this.root = root;
+        }
+
+        public String getProfile() {
+            return profile;
+        }
+
+        public void setProfile(String profile) {
+            this.profile = profile;
+        }
     }
 }

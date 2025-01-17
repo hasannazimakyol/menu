@@ -16,7 +16,7 @@ export function useAuthDispatch(){
 const authReducer = (authState, action) => {
   switch (action.type) {
     case "login-success":
-      return action.data.user;
+      return action.data;
     case "logout-success":
       return { id: 0 };
     case "user-update-success":
