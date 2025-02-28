@@ -32,5 +32,16 @@
   "mainPage": "Main Page",
   "deleteUserButton": "Delete account",
   "resetYourPassword": "Reset your password",
-  "reset": "Reset"
+  "reset": "Reset",
+  "addIngredient": "Add Ingredient",
+  "translatedName": "Translation",
+  "keyValue": "Key Value",
+  "addTranslation": "Add Translation",
+  "name": "Name",
+  "id": "Id",
+  "searchName": "Search Name",
+  "confirmDelete": "Do you confirm deletion?",
+  "delete": "Delete",
+  "ingredientList": "Ingredient List",
+  "noData": "No Data"
 }

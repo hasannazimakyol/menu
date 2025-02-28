@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import com.menu.ws.configuration.CurrentUser;
 import com.menu.ws.email.EmailService;
 import com.menu.ws.file.FileService;
+import com.menu.ws.role.Role;
+import com.menu.ws.role.RoleRepository;
+import com.menu.ws.user.dto.AssignRole;
 import com.menu.ws.user.dto.PasswordResetRequest;
 import com.menu.ws.user.dto.PasswordUpdate;
 import com.menu.ws.user.dto.UserUpdate;
@@ -29,6 +32,9 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -121,6 +127,17 @@ public class UserService {
         inDB.setPassword(passwordEncoder.encode(passwordUpdate.password()));
         inDB.setActive(true);
         userRepository.save(inDB);
+    }
+
+    public User addRoleToUser(AssignRole assignRole) {
+        User inDB = userRepository.findByEmail(assignRole.email());
+        if (inDB == null)
+            throw new NotFoundException(0);
+        Role role = roleRepository.findByName(assignRole.roleName())
+                .orElseThrow(() -> new RuntimeException("Role cannot found"));
+
+        inDB.getRoles().add(role);
+        return userRepository.save(inDB);
     }
 
 }

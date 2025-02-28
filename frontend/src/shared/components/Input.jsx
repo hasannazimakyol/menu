@@ -1,4 +1,4 @@
-import { FormControl, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 // import PropTypes from "prop-types";
 
 // Input.propTypes = {
@@ -10,7 +10,7 @@ import { FormControl, TextField } from "@mui/material";
 // }
 
 export function Input(props) {
-  const { id, label, error, onChange, type, defaultValue } = props;
+  const { id, label, error, onChange, type, defaultValue, autoComplete = "off", value, name } = props;
 
   return (
     // <FormControl>
@@ -19,14 +19,15 @@ export function Input(props) {
         // required
         fullWidth
         id={id}
-        name={id}
-        autoComplete={id}
+        name={name}
+        // autoComplete={autoComplete}
         variant="outlined"
         error={error ? true : false}
         helperText={error}
         color={+error ? "error" : "primary"}
         onChange={onChange}
         type={type}
+        value={value}
         defaultValue={defaultValue}
       />
     // </FormControl>

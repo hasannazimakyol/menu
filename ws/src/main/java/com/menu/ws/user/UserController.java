@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +22,7 @@ import com.menu.ws.shared.GenericMessage;
 import com.menu.ws.shared.Messages;
 import com.menu.ws.user.dto.UserCreate;
 import com.menu.ws.user.dto.UserDTO;
+import com.menu.ws.user.dto.AssignRole;
 import com.menu.ws.user.dto.PasswordResetRequest;
 import com.menu.ws.user.dto.PasswordUpdate;
 import com.menu.ws.user.dto.UserUpdate;
@@ -91,5 +93,11 @@ public class UserController {
         String message = Messages.getMessageForLocale("menu.activate.user.success.message",
                 LocaleContextHolder.getLocale());
         return new GenericMessage(message);
+    }
+
+    @PostMapping("api/v1/users/assign-role")
+    ResponseEntity<?> assignRole(@Valid @RequestBody AssignRole assignRole) {
+        User updatedUser = userService.addRoleToUser(assignRole);
+        return ResponseEntity.ok(updatedUser);
     }
 }

@@ -1,15 +1,19 @@
 package com.menu.ws.user;
 
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.menu.ws.auth.token.Token;
+import com.menu.ws.role.Role;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -43,6 +47,17 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE) // when deleting user, related tokens will be removed.
     List<Token> tokens;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    Set<Role> roles;
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 
     public String getImage() {
         return image;

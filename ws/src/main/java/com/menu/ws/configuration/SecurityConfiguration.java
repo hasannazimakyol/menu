@@ -20,16 +20,19 @@ public class SecurityConfiguration {
     TokenFilter tokenFilter;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, AuthEntryPoint authEntryPoint) throws Exception {
         http.authorizeHttpRequests((authentication) -> authentication
                 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT, "/api/v1/users/{id}")).authenticated()
                 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE, "/api/v1/users/{id}")).authenticated()
                 .anyRequest().permitAll());
         // http.httpBasic(Customizer.withDefaults());
         http.httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(new AuthEntryPoint()));
+        // http.httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(authEntryPoint));
 
         http.csrf(csrf -> csrf.disable());
         http.headers(headers -> headers.disable());
+
+        // http.exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint));
 
         http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
 

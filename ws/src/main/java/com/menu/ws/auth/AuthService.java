@@ -43,4 +43,12 @@ public class AuthService {
         tokenService.logout(authorizationHeader);
     }
 
+    public User getCurrentUser(String tokenWithPrefix) {
+        return tokenService.verifyToken(tokenWithPrefix);
+        // if (inDB == null)
+        //     throw new NotFoundException(0);
+        // return inDB;
+            
+    }
+
 }

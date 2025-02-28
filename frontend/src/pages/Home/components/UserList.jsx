@@ -46,9 +46,6 @@ export function UserList() {
   );
   useEffect(() => {
     getUsers();
-    return () => {
-      console.log("component is unmount empty");
-    };
     // if (authState) getUsers(page);
   }, [authState]);
 
@@ -67,7 +64,6 @@ export function UserList() {
     }
 
     return () => {
-      console.log("component is unmount");
       if (target) {
         observer.unobserve(target);
       }

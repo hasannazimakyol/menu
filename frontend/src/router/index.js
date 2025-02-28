@@ -10,6 +10,7 @@ import { Activation } from "@/pages/Activation";
 import { Profile } from "@/pages/Profile";
 import { SetPassword } from "@/pages/PasswordReset/SetPassword";
 import { PasswordResetRequest } from "@/pages/PasswordReset/Request";
+import { AddIngredient } from "@/pages/AddIngredient";
 // import { PasswordResetRequest } from "@/pages/PasswordReset/Request";
 // import { SetPassword } from "@/pages/PasswordReset/SetPassword";
 
@@ -51,6 +52,10 @@ export default createBrowserRouter([
       {
         path: "/password-reset/set",
         Component: SetPassword,
+      },
+      {
+        path: "/add-ingredient",
+        Component: AddIngredient
       }
     ],
   },
