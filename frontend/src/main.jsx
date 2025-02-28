@@ -10,10 +10,10 @@ import { CssBaseline } from "@mui/material";
 import { StrictMode } from "react";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  // <StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <RouterProvider router={router} />
     </ThemeProvider>
-  </StrictMode>
+  // </StrictMode>
 );

@@ -147,7 +147,7 @@ export function Profile() {
           {t("save")}
         </CustomButton>
 
-        <UserDeleteButton/>
+        <UserDeleteButton />
       </Grid2>
       {/* </Paper> */}
     </Container>

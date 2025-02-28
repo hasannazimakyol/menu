@@ -32,5 +32,16 @@
   "mainPage": "Ana Sayfa",
   "deleteUserButton": "Hesabı sil",
   "resetYourPassword": "Parolanızı sıfırlayın",
-  "reset": "Sıfırla"
+  "reset": "Sıfırla",
+  "addIngredient": "Malzeme Ekle",
+  "translatedName": "Çeviri",
+  "keyValue": "Anahtar Değer",
+  "addTranslation": "Çeviri Ekle",
+  "name": "İsim",
+  "id": "Id",
+  "searchName": "İsim Ara",  
+  "confirmDelete": "Silmeyi onaylıyor musunuz?",
+  "delete": "Sil",
+  "ingredientList": "Malzeme Listesi",
+  "noData": "Veri yok"
 }

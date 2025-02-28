@@ -1,5 +1,8 @@
 package com.menu.ws.user.dto;
 
+import java.util.Set;
+
+import com.menu.ws.role.Role;
 import com.menu.ws.user.User;
 
 public class UserDTO {
@@ -13,13 +16,24 @@ public class UserDTO {
     String image;
 
     String fullName;
+    
+    Set<Role> roles;
 
     public UserDTO(User user) {
         setId(user.getId());
         setUsername(user.getUsername());
         setEmail(user.getEmail());
         setImage(user.getImage());
+        setRoles(user.getRoles());
         // setFullName(user.getFirstName() + user.getLastName());
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public String getFullName() {

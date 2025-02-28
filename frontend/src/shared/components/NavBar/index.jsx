@@ -10,20 +10,23 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 // import AdbIcon from '@mui/icons-material/Adb';
-// import logo from "@/assets/react.svg";
+import logo from "@/assets/logo.png";
 import { useTranslation } from "react-i18next";
 import LanguageIcon from "@mui/icons-material/Language";
-import { Link } from "react-router-dom";
-import { Fragment, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Fragment, useEffect, useState } from "react";
 // import { useAuthDispatch, useAuthState } from "@/shared/state/context";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutSuccess } from "@/shared/state/redux";
+import {
+  loadLanguages,
+  loginSuccess,
+  logoutSuccess,
+} from "@/shared/state/redux";
 import AlertDialog from "./components/AlertDialog";
 import ProfileImage from "../ProfileImage";
-import { logout } from "./api";
+import { getCurrentUser, getLanguages, logout } from "./api";
 
 // const pages = ["Sign In", "Sign Up", "Blog"];
-const languages = ["en", "tr"];
 
 export function NavBar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -34,7 +37,39 @@ export function NavBar() {
   // const authState = useAuthState();
   // const dispatch = useAuthDispatch();
   const authState = useSelector((store) => store.auth);
+  const languageState = useSelector((store) => store.language);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      // setApiProgress(true);
+      try {
+        const response = await getCurrentUser();
+        if (response.data.user !== undefined) {
+          dispatch(loginSuccess(response.data));
+        } else {
+          dispatch(logoutSuccess());
+        }
+      } catch (axiosError) {
+        // const error = axiosError;
+      } finally {
+        // setApiProgress(false);
+      }
+    };
+
+    const loadLanguagesFromDatabase = async () => {
+      try {
+        const response = await getLanguages();
+        dispatch(loadLanguages(response.data));
+      } catch (axiosError) {
+        console.log(axiosError);
+      }
+    };
+
+    loadCurrentUser();
+    loadLanguagesFromDatabase();
+  }, [dispatch]);
 
   const onSelectLanguage = (language) => {
     i18n.changeLanguage(language);
@@ -81,6 +116,7 @@ export function NavBar() {
       } catch (error) {
       } finally {
         dispatch(logoutSuccess());
+        navigate("/");
       }
     }
     setDialogOpen(false);
@@ -121,8 +157,8 @@ export function NavBar() {
                 textDecoration: "none",
               }}
             >
-              {/* <img src={logo} width={120} /> */}
-              menu
+              <img src={logo} width={60} />
+              {/* menu */}
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               <IconButton
@@ -189,6 +225,24 @@ export function NavBar() {
                         {t("edit")}
                       </Typography>
                     </MenuItem>
+                    {authState.isAdmin && (
+                      <MenuItem
+                        key="addIngredient"
+                        component={Link}
+                        to="/add-ingredient"
+                        onClick={() => setAnchorElProfile(null)}
+                      >
+                        <Typography
+                          sx={{
+                            textAlign: "center",
+                            textDecoration: "none",
+                            color: "black",
+                          }}
+                        >
+                          {t("addIngredient")}
+                        </Typography>
+                      </MenuItem>
+                    )}
                     <MenuItem
                       key="logout"
                       onClick={() => {
@@ -335,6 +389,24 @@ export function NavBar() {
                           {t("edit")}
                         </Typography>
                       </MenuItem>
+                      {authState.isAdmin && (
+                        <MenuItem
+                          key="addIngredient"
+                          component={Link}
+                          to="/add-ingredient"
+                          onClick={() => setAnchorElProfile(null)}
+                        >
+                          <Typography
+                            sx={{
+                              textAlign: "center",
+                              textDecoration: "none",
+                              color: "black",
+                            }}
+                          >
+                            {t("addIngredient")}
+                          </Typography>
+                        </MenuItem>
+                      )}
                       <MenuItem
                         key="logout"
                         onClick={() => {
@@ -427,13 +499,13 @@ export function NavBar() {
                 open={Boolean(anchorElLanguage)}
                 onClose={handleCloseLanguageMenu}
               >
-                {languages.map((language) => (
+                {languageState.languages.map((language) => (
                   <MenuItem
-                    key={language}
-                    onClick={() => onSelectLanguage(language)}
+                    key={language.code}
+                    onClick={() => onSelectLanguage(language.code)}
                   >
                     <Typography sx={{ textAlign: "center" }}>
-                      {language.toUpperCase()}
+                      {language.name.toUpperCase()}
                     </Typography>
                   </MenuItem>
                 ))}

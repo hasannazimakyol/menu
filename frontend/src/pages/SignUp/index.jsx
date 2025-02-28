@@ -124,16 +124,16 @@ export function SignUp() {
             sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}
           >
             <Input
-              id="username"
-              label={t("username")}
-              error={errors.username}
-              onChange={(event) => setUsername(event.target.value)}
-            />
-            <Input
               id="email"
               label={t("email")}
               error={errors.email}
               onChange={(event) => setEmail(event.target.value)}
+            />
+            <Input
+              id="username"
+              label={t("username")}
+              error={errors.username}
+              onChange={(event) => setUsername(event.target.value)}
             />
             <Input
               id="password"
@@ -162,16 +162,8 @@ export function SignUp() {
             <CustomButton type="submit" apiProgress={apiProgress}>
               {t("signUp")}
             </CustomButton>
-            {generalError && (
-              <Alert color="error">
-                {generalError}
-              </Alert>
-            )}
-            {successMessage && (
-              <Alert color="success">
-                {successMessage}
-              </Alert>
-            )}
+            {generalError && <Alert color="error">{generalError}</Alert>}
+            {successMessage && <Alert color="success">{successMessage}</Alert>}
             <Typography sx={{ textAlign: "center" }}>
               {t("alreadyHaveAnAccount")}{" "}
               <span>

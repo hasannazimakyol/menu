@@ -26,6 +26,7 @@ import { Alert } from "@mui/material";
 export function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [rememberMe, setRememberMe] = useState(false);
   const [apiProgress, setApiProgress] = useState();
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState();
@@ -53,6 +54,10 @@ export function Login() {
     });
   }, [password]);
 
+  const handleCheckboxChange = (event) => {
+    setRememberMe(event.target.checked);  // Checkbox seçili ise true, değilse false
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     // setSuccessMessage();
@@ -62,6 +67,7 @@ export function Login() {
       const response = await login({
         email,
         password,
+        rememberMe
       });
       // dispatch({ type: "login-success", data: response.data.user });
       dispatch(loginSuccess(response.data));
@@ -159,7 +165,12 @@ export function Login() {
               </Link>
             </Box>
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={<Checkbox
+                value="remember"
+                color="primary"
+                checked={rememberMe}
+                onChange={handleCheckboxChange}
+              />}
               label={t("rememberMe")}
             />
             {/* <ForgotPassword open={open} handleClose={handleClose} /> */}
